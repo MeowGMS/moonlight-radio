@@ -9,11 +9,11 @@ module.exports.run = async (client, message, args, dbMessage) => {
     const otherArgs = messageArray.slice(1);
     const command = messageArray[0].slice(prefix.length).toLowerCase();
 
-    if (!message.member.roles.has(config.voteRoleID)) return message.channel.send(`**❌ У Вас нет прав использовать данную команду**`).then(m => m.delete(5000));
+    if (!message.member.roles.has(config.voteRoleID) && !message.member.hasPermission('ADMINISTRATOR')) return message.channel.send(`**❌ У Вас нет прав использовать данную команду**`).then(m => m.delete(5000));
 
     let userForPunish = message.mentions.users.first();
     let punishTime = parseInt(messageArray[2], 10);
-    let reasonArgCount = prefix.length + command.length + messageArray[1].lenght + messageArray[2].lenght + 3;
+    let reasonArgCount = prefix.length + command.length + messageArray[1].length + messageArray[2].length + 3;
     let punishReason = message.content.slice(reasonArgCount);
 
     if (!userForPunish) return message.channel.send(`**❌ Юзер не найден**`);
@@ -34,7 +34,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
         client.channels.get(config.votesChannelID).fetchMessage(m.id).catch(console.error);
     });
 
-    
+
 
 }
 
