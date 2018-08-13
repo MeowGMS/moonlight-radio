@@ -23,9 +23,9 @@ module.exports.run = async (client, message, args, dbMessage) => {
     if (!messageArray[3]) return message.channel.send(`**❗ Укажите причину мута**`).then(m => m.delete(5000));
 
     dbMessage.findOne({
-        punishableID:
-    }).then(voiting => {
-        if (voiting) {
+        punishableID: userForPunish.id
+    }).then((voting) => {
+        if (voting) {
             return message.channel.send(`**❌ Голосование по поводу мута данного юзера уже запущено**`)
         } else {
 
