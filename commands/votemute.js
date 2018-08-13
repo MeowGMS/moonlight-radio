@@ -23,7 +23,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
         .addField(`Кого наказывают?`, `**Юзер:** ${userForPunish}\n**ID:** \`${userForPunish.id}\`\n**Тег:** ${userForPunish.tag}`)
         .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
         .setFooter(`${message.guild.name}`)
-        .setThumbnail(`${userForPunish.avatarURL}`)
+        //.setThumbnail(`${userForPunish.avatarURL}`)
         .setTimestamp()
 
     client.guilds.get('468327359687426049').channels.get(config.votesChannelID).send(`\`\`\` \`\`\``, {
