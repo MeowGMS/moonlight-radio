@@ -8,7 +8,6 @@ module.exports.run = async (client, message, args, dbMessage) => {
     const messageArray = message.content.split(/\s+/g);
     const otherArgs = messageArray.slice(1);
     const command = messageArray[0].slice(prefix.length).toLowerCase();
-    const command = 'votemute';
 
     if (!message.member.roles.has(config.voteRoleID)) return message.channel.send(`**❌ У Вас нет прав использовать данную команду**`).then(m => m.delete(5000));
 
@@ -35,6 +34,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
         client.channels.get(config.votesChannelID).fetchMessage(m.id).catch(console.error);
     });
 
+    
 
 }
 
