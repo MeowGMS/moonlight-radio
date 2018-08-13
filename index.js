@@ -41,7 +41,9 @@ fs.readdir("./commands/", (err, files) => {
     console.log(`======================================\n\n - Всего загружено ${commandCount} команд`);
 });
 
-mongoose.connect(process.env.mongo_url, () => {
+mongoose.connect(process.env.mongo_url, {
+    useNewUrlParser: true
+}, () => {
     console.log(` - Подключено к базе данных`);
 });
 
@@ -54,7 +56,7 @@ client.on("message", async message => {
 
     if (!message.content.startsWith(prefix)) return;
 
-    let messageArray = message.content.split(" ");
+    let messageArray = message.content.split(/\s+/g);
     let cmd = messageArray[0];
     let args = messageArray.slice(1);
 
