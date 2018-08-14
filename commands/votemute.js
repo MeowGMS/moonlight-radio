@@ -71,7 +71,8 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                 setTimeout(() => {
                     dbMessage.findOne({
-                        punishableID: userForPunish.id
+                        punishableID: userForPunish.id,
+                        ended: false
                     }, function(err, msgs) {
                         if (msgs.in_favor > msgs.against) {
                             let embed = new Discord.RichEmbed()
@@ -127,7 +128,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             });
                         }
 
-                        
+
                     });
 
                     dbMessage.findOneAndUpdate({
