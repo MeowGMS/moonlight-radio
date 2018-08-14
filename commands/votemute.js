@@ -33,10 +33,12 @@ module.exports.run = async (client, message, args, dbMessage) => {
             return message.channel.send(`**\\❌ Голосование по поводу мута данного юзера уже запущено**`).then(m => m.delete(5000));
         } else {
 
+            if ()
+
             let embed = new Discord.RichEmbed()
                 .setAuthor(`${message.author.tag}`, `${message.author.avatarURL}`)
                 .addField(`Кого наказывают?`, `${userForPunish}`, true)
-                .addField(`Время мута`, `${punishTime} минут`, true)
+                .addField(`Время мута`, `${punishTime} минут${letter}`, true)
                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                 .setThumbnail(`${userForPunish.avatarURL}`)
                 .setColor(`#36393E`)
@@ -74,7 +76,6 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     }, function(err, msgs) {
                         if (msgs.in_favor > msgs.against) {
                             let embed = new Discord.RichEmbed()
-                                //.setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
                                 .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` минут**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
                                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                                 .setColor(`#00D11A`)
@@ -105,7 +106,6 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                         if (msgs.in_favor <= msgs.against) {
                             let embed = new Discord.RichEmbed()
-                                //.setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
                                 .addField(`Информация`, `**${userForPunish} не был замучен\n\nСоотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌\n\nНачал голосование: ${message.author}**`)
                                 .setColor(`#F01717`)
                                 .setFooter(`${m.guild.name}`)
