@@ -99,7 +99,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     }, function(err, msgs) {
                         if (msgs.in_favor > msgs.against) {
                             let embed = new Discord.RichEmbed()
-                                .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` ${declOfNum(punishTime, titlesArray)}`**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
+                                .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` ${declOfNum(punishTime, titlesArray)}**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
                                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                                 .setColor(`#00D11A`)
                                 .setFooter(`${m.guild.name}`)
