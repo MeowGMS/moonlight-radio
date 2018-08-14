@@ -55,29 +55,33 @@ mongoose.connect(process.env.mongo_url, {
 client.on("ready", async () => {
     console.log(` - ${client.user.username} онлайн на ${client.guilds.size} серверах!\n\n======================================`);
 
-    /*let nowTimeStamp = Date.now()
-
-    dbMessage.find({
-        ended: false
-    }).where('unmuteTime').lte(nowTimeStamp).exec(function(err, msgs) {
-        client.guilds.get('468327359687426049').members.get(msgs.punishableID).removeRole(config.muteRoleID);
-        console.log(`${client.guilds.get('468327359687426049').members.get(msgs.punishableID)} был размучен`);
+    let nowTimeStamp = Date.now()
+    msgs.unmuteTime
+    client.guilds.get('477053926210928660').forEach((member) => {
+        dbMessage.findOne({
+            punishableID: member.user.id,
+            ended: false
+        }).then((voting) => {
+            if (voting) {
+                dbMessage.findOne({
+                    punishableID: member.user.id,
+                    ended: false
+                }, function(err, msgs) {
+                    if (nowTimeStamp >= msgs.unmuteTime) {
+                        member.removeRole(config.muteRoleID);
+                        console.log(`${member.user.tag} размучен`);
+                    } else {
+                        member.addRole(config.muteRoleID)
+                        setTimeout(() => {
+                            member.removeRole(config.muteRoleID);
+                            console.log(`${member.user.tag} был замучен и будет размучен через ${Math.round((msgs.unmuteTime - nowTimeStamp) / 1000)}`);
+                            msgs.ended = true;
+                        }, msgs.unmuteTime - nowTimeStamp);
+                    }
+                });
+            }
+        });
     });
-
-    dbMessage.find({
-        ended: false
-    }).where('unmuteTime').gt(nowTimeStamp).exec(function(err, msgs) {
-
-        let newUnmuteTimeInMs = msgs.unmuteTime - nowTimeStamp;
-
-        client.guilds.get('468327359687426049').members.get(msgs.punishableID).addRole(config.muteRoleID);
-        console.log(`${client.guilds.get('468327359687426049').members.get(msgs.punishableID)} был замучен и будет размучен через ${Math.floor(newUnmuteTimeInMs / 1000)}`);
-
-        setTimeout(() => {
-            client.guilds.get('468327359687426049').members.get(msgs.punishableID).removeRole(config.muteRoleID);
-            console.log(`${client.guilds.get('468327359687426049').members.get(msgs.punishableID)} был размучен`);
-        }, newUnmuteTimeInMs);
-    }); */
 });
 
 client.on('messageReactionAdd', (reaction, user) => {
