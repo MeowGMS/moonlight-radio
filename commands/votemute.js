@@ -79,17 +79,31 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                 new dbMessage({
                     id: m.id,
+                    msgChannelID: m.channel.id,
                     in_favor: 1,
                     against: 0,
-                    punishTime: punishTime * 60000,
+                    punishTime: punishTime * multNum,
                     authorID: message.author.id,
                     punishableID: userForPunish.id,
                     resultsTime: notTimestamp + 600000,
                     punishReason: punishReason,
-                    ended: false
+                    ended: false,
+                    endedVoting: false,
+                    in_favorIDs: message.author.id
                 }).save();
 
+
+
                 setTimeout(() => {
+
+                    dbMessage.findOne({
+                        punishableID: userForPunish.id,
+                        endedVoting: false
+                    }, function(err, msgs) {
+                        msgs.endedVoting = true;
+                        msgs.save();
+                    });
+
                     dbMessage.findOne({
                         punishableID: userForPunish.id,
                         ended: false
@@ -163,7 +177,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                         ended: false
                     }, function(err, msgs) {
                         msgs.ended = true;
-                        msgs.save().then(() => console.log(`db doc updated`));
+                        msgs.save();
                     });
                 }, 20000);
                 //}, 600000);
