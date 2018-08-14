@@ -48,7 +48,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                 embed
             }).then(m => {
                 m.react(`✅`).then(() => m.react(`❌`));
-                client.guilds.get('468327359687426049').channels.get('478567412028145685').fetchMessage(m.id).then(() => {
+                client.channels.get(message.channel.id).fetchMessage(m.id).then(() => {
                     console.log(`Сообщение ID: ${m.id} получено`);
                 });
 
