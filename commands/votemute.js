@@ -89,7 +89,12 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
 
                                 console.log(`${userForPunish.tag} был размучен`);
+
+                                dbMessage.deleteOne({
+                                    punishableID: userForPunish.id
+                                }).then(() => console.log(`db doc deleted`))
                             }, punishTime);
+
                         } else if (msgs.in_favor <= msgs.against) {
                             let embed = new Discord.RichEmbed()
                                 .setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
@@ -109,7 +114,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
 
         }
-    })
+    });
 
 }
 
