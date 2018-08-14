@@ -18,7 +18,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
     message.delete(300);
 
-    let lastSymbol = messageArray[2][messageArray[2].length-1];
+    let lastSymbol = messageArray[2][messageArray[2].length - 1];
     let titlesArray = [''];
     let multNum = 0;
 
@@ -46,7 +46,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
     if (!messageArray[3]) return message.channel.send(`**\\❗ Укажите причину мута**`).then(m => m.delete(5000));
     if (userForPunish.bot) return message.channel.send(`**\\❗ Невозможно замутить бота**`).then(m => m.delete(5000));
     if (message.guild.members.get(userForPunish.id).roles.has(config.muteRoleID)) return message.channel.send(`**\\❌ Пользователь уже замучен**`).then(m => m.delete(5000));
-    //if (userForPunish.id == message.author.id) return message.channel.send(`**\\❌ Невозможно замутить самого себя**`).then(m => m.delete(5000));
+    if (userForPunish.id == message.author.id) return message.channel.send(`**\\❌ Невозможно замутить самого себя**`).then(m => m.delete(5000));
 
     let punishTimeMs = multNum * punishTime;
 
@@ -151,8 +151,15 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
 
                                 console.log(`${userForPunish.tag} был размучен`);
-                            }, punishTime * 5000);
-                            //}, punishTime * multNum);
+                                
+                                dbMessage.findOne({
+                                    punishableID: userForPunish.id,
+                                    ended: false
+                                }, function(err, msgs) {
+                                    msgs.ended = true;
+                                    msgs.save();
+                                });
+                            }, punishTimeMs);
 
                             m.clearReactions();
 
@@ -175,13 +182,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                     });
 
-                    dbMessage.findOne({
-                        punishableID: userForPunish.id,
-                        ended: false
-                    }, function(err, msgs) {
-                        msgs.ended = true;
-                        msgs.save();
-                    });
+
                 }, 20000);
                 //}, 600000);
             });
