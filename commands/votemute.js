@@ -93,9 +93,6 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             msgs.unmuteTime = notTimestamp + msgs.punishTime;
 
                             msgs.save();
-
-
-
                             setTimeout(() => {
                                 m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
 
@@ -130,8 +127,12 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             });
                         }
 
-                        msgs.ended = true;
-                        msgs.save();
+                        dbMessage.findOneAndUpdate({
+                            punishableID: userForPunish.id,
+                            ended: false
+                        }, {
+                            ended: true
+                        });
                     });
                 }, 10000);
                 //}, 600000);
