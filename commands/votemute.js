@@ -21,18 +21,19 @@ module.exports.run = async (client, message, args, dbMessage) => {
     let lastSymbol = messageArray[2][messageArray[2].length-1];
     let titlesArray = [''];
 
-    console.log(lastSymbol);
-
     if (lastSymbol == 'm' || lastSymbol == 'м') {
-        let titlesArray = ['минута', 'минуты', 'минут'];
+        console.log(1);
+        titlesArray = ['минута', 'минуты', 'минут'];
         let multNum = 60000;
         let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
     } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
-        let titlesArray = ['час', 'часа', 'часов'];
+        console.log(2);
+        titlesArray = ['час', 'часа', 'часов'];
         let multNum = 3600000;
         let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
     } else {
-        let titlesArray = ['минута', 'минуты', 'минут'];
+        console.log(3);
+        titlesArray = ['минута', 'минуты', 'минут'];
         let multNum = 60000;
         let punishTime = parseInt(messageArray[2], 10);
     }
@@ -98,7 +99,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     }, function(err, msgs) {
                         if (msgs.in_favor > msgs.against) {
                             let embed = new Discord.RichEmbed()
-                                .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` минут**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
+                                .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` ${declOfNum(punishTime, titlesArray)}`**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
                                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                                 .setColor(`#00D11A`)
                                 .setFooter(`${m.guild.name}`)
