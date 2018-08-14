@@ -23,7 +23,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
     if (lastSymbol == 'm' || lastSymbol == 'м') {
         console.log(1);
-        titlesArray = ['минута', 'минуты', 'минут'];
+        titlesArray = ['минуту', 'минуты', 'минут'];
         let multNum = 60000;
         let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
     } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
@@ -33,7 +33,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
         let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
     } else {
         console.log(3);
-        titlesArray = ['минута', 'минуты', 'минут'];
+        titlesArray = ['минуту', 'минуты', 'минут'];
         let multNum = 60000;
         let punishTime = parseInt(messageArray[2], 10);
     }
