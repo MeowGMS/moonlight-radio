@@ -151,7 +151,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
 
                                 console.log(`${userForPunish.tag} был размучен`);
-                                
+
                                 dbMessage.findOne({
                                     punishableID: userForPunish.id,
                                     ended: false
@@ -183,7 +183,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     });
 
 
-                }, 20000);
+                }, 10000);
                 //}, 600000);
             });
 
