@@ -16,7 +16,8 @@ const messageSchema = new Schema({
     resultsTime: Number,
     authorID: String,
     punishableID: String,
-    punishReason: String
+    punishReason: String,
+    ended: Boolean
 });
 const dbMessage = mongoose.model('message', messageSchema);
 
@@ -58,9 +59,7 @@ client.on("ready", async () => {
 client.on('messageReactionAdd', (reaction, user) => {
     let reactionMember = reaction.message.guild.members.get(user.id);
 
-    console.log(`reactionAdd`);
-
-    if (reaction.emoji.name == "✅" && reaction.message.channel.id == config.votesChannelID && !user.bot) {
+    if (reaction.emoji.name == "✅" && !user.bot && reactionMember.roles.has(config.voteRoleID)) {
         dbMessage.findOne({
             id: reaction.message.id
         }, function(err, msgs) {
@@ -75,7 +74,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         }
     }
 
-    if (reaction.emoji.name == "❌" && reaction.message.channel.id == config.votesChannelID && !user.bot) {
+    if (reaction.emoji.name == "❌" && !user.bot && reactionMember.roles.has(config.voteRoleID)) {
         dbMessage.findOne({
             id: reaction.message.id
         }, function(err, msgs) {
@@ -95,9 +94,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 client.on('messageReactionRemove', (reaction, user) => {
     let reactionMember = reaction.message.guild.members.get(user.id);
 
-    console.log(`reactionRemove`);
-
-    if (reaction.emoji.name == "✅" && reaction.message.channel.id == config.votesChannelID && !user.bot) {
+    if (reaction.emoji.name == "✅" && !user.bot && reactionMember.roles.has(config.voteRoleID)) {
         dbMessage.findOne({
             id: reaction.message.id
         }, function(err, msgs) {
@@ -106,7 +103,7 @@ client.on('messageReactionRemove', (reaction, user) => {
         });
     }
 
-    if (reaction.emoji.name == "❌" && reaction.message.channel.id == config.votesChannelID && !user.bot) {
+    if (reaction.emoji.name == "❌" && !user.bot && reactionMember.roles.has(config.voteRoleID)) {
         dbMessage.findOne({
             id: reaction.message.id
         }, function(err, msgs) {
