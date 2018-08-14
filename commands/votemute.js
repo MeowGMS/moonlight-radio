@@ -63,7 +63,8 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     authorID: message.author.id,
                     punishableID: userForPunish.id,
                     resultsTime: notTimestamp + 600000,
-                    punishReason: punishReason
+                    punishReason: punishReason,
+                    ended: false
                 }).save().then(() => {
                     console.log(`db doc created`);
                 });
@@ -128,6 +129,9 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 });
                             });
                         }
+
+                        msgs.ended = true;
+                        msgs.save();
                     });
                 }, 10000);
                 //}, 600000);
