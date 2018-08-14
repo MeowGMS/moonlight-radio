@@ -8,11 +8,14 @@ const prefix = 'v.'
 
 const messageSchema = new Schema({
     id: String,
-    against: Number,
     in_favor: Number,
-    time: Number,
+    against: Number,
+    punishTime: Number,
+    unmuteTime: Number,
+    resultsTime: Number,
     authorID: String,
-    punishableID: String
+    punishableID: String,
+    punishReason: String
 });
 const dbMessage = mongoose.model('message', messageSchema);
 
@@ -51,6 +54,62 @@ client.on("ready", async () => {
     console.log(` - ${client.user.username} онлайн на ${client.guilds.size} серверах!\n\n======================================`);
 });
 
+client.on('messageReactionAdd', (reaction, user) => {
+    let reactionMember = reaction.message.guild.members.get(user.id);
+
+    if (reaction.emoji.name == "✅" && reaction.message.channel == config.votesChannelID) {
+        dbMessage.findOne({
+            id: message.id
+        }, function(err, msgs) {
+            msgs.in_favor += 1;
+            msgs.save();
+        });
+
+        let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
+
+        if (otherReactionUser) {
+            reaction.message.reactions.get('❌').remove(user.id);
+        }
+    }
+
+    if (reaction.emoji.name == "❌" && reaction.message.channel == config.votesChannelID) {
+        dbMessage.findOne({
+            id: message.id
+        }, function(err, msgs) {
+            msgs.against += 1;
+            msgs.save();
+        });
+
+        let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
+
+        if (otherReactionUser) {
+            reaction.message.reactions.get('✅').remove(user.id);
+        }
+    }
+
+});
+
+client.on('messageReactionRemove', (reaction, user) => {
+    let reactionMember = reaction.message.guild.members.get(user.id);
+
+    if (reaction.emoji.name == "✅" && reaction.message.channel == config.votesChannelID) {
+        dbMessage.findOne({
+            id: message.id
+        }, function(err, msgs) {
+            msgs.in_favor += 1;
+            msgs.save();
+        });
+    }
+
+    if (reaction.emoji.name == "❌" && reaction.message.channel == config.votesChannelID) {
+        dbMessage.findOne({
+            id: message.id
+        }, function(err, msgs) {
+            msgs.against -= 1;
+            msgs.save();
+        });
+    }
+});
 
 client.on("message", async message => {
 
