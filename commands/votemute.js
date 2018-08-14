@@ -47,7 +47,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
             }).then(m => {
                 m.react(`✅`).then(() => m.react(`❌`));
                 client.channels.get(config.votesChannelID).fetchMessage(m.id).catch(console.error);
-                m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
+                
 
                 let notTimestamp = Date.now();
 
@@ -80,6 +80,8 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             m.edit(`\`\`\` \`\`\``, {
                                 embed
                             });
+
+                            m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
 
                             let notTimestamp = Date.now();
 
