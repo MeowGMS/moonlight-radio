@@ -127,12 +127,16 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             });
                         }
 
-                        dbMessage.findOneAndUpdate({
-                            punishableID: userForPunish.id,
-                            ended: false
-                        }, {
-                            ended: true
-                        });
+                        
+                    });
+
+                    dbMessage.findOneAndUpdate({
+                        punishableID: userForPunish.id,
+                        ended: false
+                    }, {
+                        ended: true
+                    }).then(() => {
+                        console.log(`doc updated`);
                     });
                 }, 10000);
                 //}, 600000);
