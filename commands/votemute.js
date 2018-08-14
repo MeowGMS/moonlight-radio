@@ -1,127 +1,124 @@
 const Discord = require("discord.js");
-const mongoose = require("mongoose");
-const fs = require("fs");
+const config = require("../config.json");
+const prefix = "v.";
 
-const config = require("./config.json");
-const client = new Discord.Client();
-const Schema = mongoose.Schema;
-const prefix = 'v.'
 
-const messageSchema = new Schema({
-    id: String,
-    in_favor: Number,
-    against: Number,
-    punishTime: Number,
-    unmuteTime: Number,
-    resultsTime: Number,
-    authorID: String,
-    punishableID: String,
-    punishReason: String
-});
-const dbMessage = mongoose.model('message', messageSchema);
+module.exports.run = async (client, message, args, dbMessage) => {
 
-client.commands = new Discord.Collection();
+    const messageArray = message.content.split(/\s+/g);
+    const otherArgs = messageArray.slice(1);
+    const command = messageArray[0].slice(prefix.length).toLowerCase();
 
-fs.readdir("./commands/", (err, files) => {
+    if (!message.member.roles.has(config.voteRoleID) && !message.member.hasPermission('ADMINISTRATOR')) return message.channel.send(`**❌ У Вас нет прав использовать данную команду**`).then(m => m.delete(5000));
 
-    let commandCount = 0;
+    message.delete(300);
 
-    if (err) console.log(err);
-    let jsfile = files.filter(f => f.split(".").pop() === "js");
-    if (jsfile.length <= 0) {
-        console.log("Команда не найдена");
-        return;
-    }
+    let userForPunish = message.mentions.users.first();
+    let punishTime = parseInt(messageArray[2], 10);
+    let reasonArgCount = prefix.length + command.length + messageArray[1].length + messageArray[2].length + 3;
+    let punishReason = message.content.slice(reasonArgCount);
 
-    jsfile.forEach((f, i) => {
-        let props = require(`./commands/${f}`);
-        let commandName = f.slice(-2);
+    if (!userForPunish) return message.channel.send(`**\\❌ Юзер не найден**`).then(m => m.delete(5000));
+    if (!punishTime) return message.channel.send(`**\\❗ Укажите время мута**`).then(m => m.delete(5000));
+    if (!messageArray[3]) return message.channel.send(`**\\❗ Укажите причину мута**`).then(m => m.delete(5000));
+    if (userForPunish.bot) return message.channel.send(`**\\❗ Невозможно замутить бота**`).then(m => m.delete(5000));
 
-        console.log(`Файл ${f} загружен!`);
-        commandCount = commandCount + 1;
+    dbMessage.findOne({
+        punishableID: userForPunish.id
+    }).then((voting) => {
+        if (voting) {
+            return message.channel.send(`**\\❌ Голосование по поводу мута данного юзера уже запущено**`).then(m => m.delete(5000));
+        } else {
 
-        client.commands.set(props.help.name, props);
+            let embed = new Discord.RichEmbed()
+                .setAuthor(`${message.author.tag}`, `${message.author.avatarURL}`)
+                .addField(`Кого наказывают?`, `**Юзер:** ${userForPunish}\n**ID:** \`${userForPunish.id}\`\n**Тег:** \`${userForPunish.tag}\``, true)
+                .addField(`Время мута`, `${punishTime} минут`, true)
+                .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
+                .setThumbnail(`${userForPunish.avatarURL}`)
+                .setColor(`#36393E`)
+                .setFooter(`${message.guild.name}`)
+                .setTimestamp()
+
+            client.guilds.get('468327359687426049').channels.get(config.votesChannelID).send(`\`\`\` \`\`\``, {
+                embed
+            }).then(m => {
+                m.react(`✅`).then(() => m.react(`❌`));
+                client.channels.get(config.votesChannelID).fetchMessage(m.id).catch(console.error);
+
+                let notTimestamp = Date.now();
+
+                new dbMessage({
+                    id: m.id,
+                    in_favor: 1,
+                    against: 0,
+                    punishTime: punishTime * 60000,
+                    authorID: message.author.id,
+                    punishableID: userForPunish.id,
+                    resultsTime: notTimestamp + 600000,
+                    punishReason: punishReason
+                }).save().then(() => {
+                    console.log(`db doc created`);
+                });
+
+                setTimeout(() => {
+                    dbMessage.findOne({
+                        punishableID: userForPunish.id
+                    }, function(err, msgs) {
+                        if (msgs.in_favor > msgs.against) {
+                            let embed = new Discord.RichEmbed()
+                                .setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
+                                .addField(`Информация`, `${userForPunish} был замучен на \`${punishTime}\` **минут**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
+                                .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
+                                .setColor(`#00D11A`)
+                                .setFooter(`${m.guild.name}`)
+                                .setTimestamp()
+
+                            m.edit(`\`\`\` \`\`\``, {
+                                embed
+                            });
+
+                            let notTimestamp = Date.now();
+
+                            msgs.unmuteTime = notTimestamp + msgs.punishTime;
+
+                            msgs.save();
+
+                            m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
+
+                            setTimeout(() => {
+                                m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
+
+                                console.log(`${userForPunish.tag} был размучен`);
+
+                                dbMessage.deleteOne({
+                                    punishableID: userForPunish.id
+                                }).then(() => console.log(`db doc deleted`))
+                            }, punishTime);
+
+                        } else if (msgs.in_favor <= msgs.against) {
+                            let embed = new Discord.RichEmbed()
+                                .setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
+                                .addField(`Информация`, `${userForPunish} не был замучен\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
+                                .setColor(`#F01717`)
+                                .setFooter(`${m.guild.name}`)
+                                .setTimestamp()
+
+                            m.edit(`\`\`\` \`\`\``, {
+                                embed
+                            });
+                        }
+                    });
+                }, 5000);
+                //}, 600000);
+            });
+
+
+        }
     });
-    console.log(`======================================\n\n - Всего загружено ${commandCount} команд`);
-});
 
-mongoose.connect(process.env.mongo_url, {
-    useNewUrlParser: true
-}, () => {
-    console.log(` - Подключено к базе данных`);
-});
+}
 
-client.on("ready", async () => {
-    console.log(` - ${client.user.username} онлайн на ${client.guilds.size} серверах!\n\n======================================`);
-});
-
-client.on('messageReactionAdd', (reaction, user) => {
-    let reactionMember = reaction.message.guild.members.get(user.id);
-
-    if (reaction.emoji.name == "✅" && reaction.message.channel == config.votesChannelID && !user.bot) {
-        dbMessage.findOne({
-            id: message.id
-        }, function(err, msgs) {
-            msgs.in_favor += 1;
-            msgs.save();
-        });
-
-        let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
-
-        if (otherReactionUser) {
-            reaction.message.reactions.get('❌').remove(user.id);
-        }
-    }
-
-    if (reaction.emoji.name == "❌" && reaction.message.channel == config.votesChannelID && !user.bot) {
-        dbMessage.findOne({
-            id: message.id
-        }, function(err, msgs) {
-            msgs.against += 1;
-            msgs.save();
-        });
-
-        let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
-
-        if (otherReactionUser) {
-            reaction.message.reactions.get('✅').remove(user.id);
-        }
-    }
-
-});
-
-client.on('messageReactionRemove', (reaction, user) => {
-    let reactionMember = reaction.message.guild.members.get(user.id);
-
-    if (reaction.emoji.name == "✅" && reaction.message.channel == config.votesChannelID && !user.bot) {
-        dbMessage.findOne({
-            id: message.id
-        }, function(err, msgs) {
-            msgs.in_favor += 1;
-            msgs.save();
-        });
-    }
-
-    if (reaction.emoji.name == "❌" && reaction.message.channel == config.votesChannelID && !user.bot) {
-        dbMessage.findOne({
-            id: message.id
-        }, function(err, msgs) {
-            msgs.against -= 1;
-            msgs.save();
-        });
-    }
-});
-
-client.on("message", async message => {
-
-    if (!message.content.startsWith(prefix)) return;
-
-    let messageArray = message.content.split(/\s+/g);
-    let cmd = messageArray[0];
-    let args = messageArray.slice(1);
-
-    let commandfile = client.commands.get(cmd.slice(prefix.length));
-    if (commandfile) commandfile.run(client, message, args, dbMessage);
-});
-
-client.login(process.env.token).catch(console.error);
+module.exports.help = {
+    name: "votemute"
+}
