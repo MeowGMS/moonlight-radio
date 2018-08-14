@@ -55,7 +55,7 @@ mongoose.connect(process.env.mongo_url, {
 client.on("ready", async () => {
     console.log(` - ${client.user.username} онлайн на ${client.guilds.size} серверах!\n\n======================================`);
 
-    let nowTimeStamp = Date.now()
+    /*let nowTimeStamp = Date.now()
 
     dbMessage.find({
         ended: false
@@ -77,7 +77,7 @@ client.on("ready", async () => {
             client.guilds.get('468327359687426049').members.get(msgs.punishableID).removeRole(config.muteRoleID);
             console.log(`${client.guilds.get('468327359687426049').members.get(msgs.punishableID)} был размучен`);
         }, newUnmuteTimeInMs);
-    });
+    }); */
 });
 
 client.on('messageReactionAdd', (reaction, user) => {
