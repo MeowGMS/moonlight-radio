@@ -106,6 +106,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             let punishTime = parseInt(messageArray[2], 10);
 
                             let embed = new Discord.RichEmbed()
+                                .setAuthor(`${message.guild.name}`, `${message.guild.iconURL}`)
                                 .addField(`Информация`, `**${userForPunish} лишился прав общаться в голосовых и текстовых каналах**\n\n**Начал голосование:** ${message.author}`)
                                 .addField(`За \\✅`, `${msgs.in_favor}`, true)
                                 .addField(`Против \\❌`, `${msgs.against}`, true)
@@ -116,7 +117,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 .setFooter(`${m.guild.name}`)
                                 .setTimestamp()
 
-                            m.edit(`\`\`\` \`\`\``, {
+                            m.edit({
                                 embed
                             });
 
@@ -155,7 +156,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 .setTimestamp()
                                 .setThumbnail(`${userForPunish.avatarURL}`)
 
-                            m.edit(`\`\`\` \`\`\``, {
+                            m.edit({
                                 embed
                             });
 
