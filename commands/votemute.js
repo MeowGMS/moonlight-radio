@@ -109,13 +109,19 @@ module.exports.run = async (client, message, args, dbMessage) => {
                         if (msgs.in_favor <= msgs.against) {
                             let embed = new Discord.RichEmbed()
                                 //.setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
-                                .addField(`Информация`, `**${userForPunish} не был замучен\n\nСоотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌\n\n**Начал голосование: ${message.author}**`)
+                                .addField(`Информация`, `**${userForPunish} не был замучен\n\nСоотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌\n\nНачал голосование: ${message.author}**`)
                                 .setColor(`#F01717`)
                                 .setFooter(`${m.guild.name}`)
                                 .setTimestamp()
 
                             m.edit(`\`\`\` \`\`\``, {
                                 embed
+                            });
+
+                            m.reactions.users.forEach(function(user) {
+                                m.reactions.forEach(function(reaction) {
+                                    reaction.remove(user.id);
+                                });
                             });
                         }
                     });
