@@ -35,7 +35,6 @@ module.exports.run = async (client, message, args, dbMessage) => {
     let punishTimeMs = punishTime * 60000;
 
     if (!messageArray[3]) {
-        console.log(1);
         punishReason = 'Без причины';
     }
 
