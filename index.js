@@ -1,7 +1,8 @@
 const Discord = require("discord.js");
-const fs = require("fs");
 const mongoose = require("mongoose");
+const fs = require("fs");
 
+const config = require("./config.json");
 const client = new Discord.Client();
 const Schema = mongoose.Schema;
 const prefix = 'v.'
@@ -57,7 +58,7 @@ client.on("ready", async () => {
 client.on('messageReactionAdd', (reaction, user) => {
     let reactionMember = reaction.message.guild.members.get(user.id);
 
-    if (reaction.emoji.name == "✅" && reaction.message.channel == config.votesChannelID) {
+    if (reaction.emoji.name == "✅" && reaction.message.channel == config.votesChannelID && !user.bot) {
         dbMessage.findOne({
             id: message.id
         }, function(err, msgs) {
@@ -72,7 +73,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         }
     }
 
-    if (reaction.emoji.name == "❌" && reaction.message.channel == config.votesChannelID) {
+    if (reaction.emoji.name == "❌" && reaction.message.channel == config.votesChannelID && !user.bot) {
         dbMessage.findOne({
             id: message.id
         }, function(err, msgs) {
@@ -92,7 +93,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 client.on('messageReactionRemove', (reaction, user) => {
     let reactionMember = reaction.message.guild.members.get(user.id);
 
-    if (reaction.emoji.name == "✅" && reaction.message.channel == config.votesChannelID) {
+    if (reaction.emoji.name == "✅" && reaction.message.channel == config.votesChannelID && !user.bot) {
         dbMessage.findOne({
             id: message.id
         }, function(err, msgs) {
@@ -101,7 +102,7 @@ client.on('messageReactionRemove', (reaction, user) => {
         });
     }
 
-    if (reaction.emoji.name == "❌" && reaction.message.channel == config.votesChannelID) {
+    if (reaction.emoji.name == "❌" && reaction.message.channel == config.votesChannelID && !user.bot) {
         dbMessage.findOne({
             id: message.id
         }, function(err, msgs) {
