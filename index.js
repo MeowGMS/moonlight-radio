@@ -64,6 +64,7 @@ client.on("ready", async () => {
     client.guilds.get('468327359687426049').members.forEach((member) => {
         dbMessage.findOne({
             punishableID: member.user.id,
+            endedVoting: true,
             ended: false
         }).then((voting) => {
             if (voting) {
@@ -80,7 +81,7 @@ client.on("ready", async () => {
                         member.addRole(config.muteRoleID)
                         setTimeout(() => {
                             member.removeRole(config.muteRoleID);
-                            console.log(`${member.user.tag} был замучен и будет размучен через ${Math.round((msgs.unmuteTime - nowTimeStamp) / 1000)}`);
+                            console.log(`${member.user.tag} был замучен и будет размучен через ${Math.round((msgs.unmuteTime - nowTimeStamp) / 1000)} секунд`);
                             msgs.ended = true;
                             msgs.save()
                         }, msgs.unmuteTime - nowTimeStamp);
@@ -202,7 +203,7 @@ client.on("ready", async () => {
 
                     } else {
 
-                        console.log(`Голосование запущено заного и будет закончено через ${Math.floor((msgs.resultsTime - nowTimeStamp) / 1000)}`);
+                        console.log(`Голосование запущено заного и будет закончено через ${Math.floor((msgs.resultsTime - nowTimeStamp) / 1000)} секунд`);
                         setTimeout(() => {
 
                             dbMessage.findOne({
