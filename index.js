@@ -57,7 +57,7 @@ client.on("ready", async () => {
 
     let nowTimeStamp = Date.now()
 
-    client.guilds.get('477053926210928660').members.forEach((member) => {
+    client.guilds.get('468327359687426049').members.forEach((member) => {
         dbMessage.findOne({
             punishableID: member.user.id,
             ended: false
