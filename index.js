@@ -90,7 +90,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         }).then(voting => {
             if (voting) {
                 dbMessage.findOne({
-                    id: reaction.message.id
+                    id: reaction.message.id,
                     ended: false
                 }, function(err, msgs) {
 
