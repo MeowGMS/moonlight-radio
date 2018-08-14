@@ -104,6 +104,12 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             }, punishTime * 5000);
                             //}, punishTime * 60000);
 
+                            m.reactions.forEach(function(reaction) {
+                                reaction.users.forEach(function(user) {
+                                    reaction.remove(user.id);
+                                });
+                            });
+
                         }
 
                         if (msgs.in_favor <= msgs.against) {
