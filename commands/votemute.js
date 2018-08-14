@@ -65,9 +65,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     resultsTime: notTimestamp + 600000,
                     punishReason: punishReason,
                     ended: false
-                }).save().then(() => {
-                    console.log(`db doc created`);
-                });
+                }).save();
 
                 setTimeout(() => {
                     dbMessage.findOne({
@@ -101,11 +99,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             }, punishTime * 5000);
                             //}, punishTime * 60000);
 
-                            m.reactions.forEach(function(reaction) {
-                                reaction.users.forEach(function(user) {
-                                    reaction.remove(user.id);
-                                });
-                            });
+                            m.clearReactions();
 
                         }
 
@@ -121,11 +115,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 embed
                             });
 
-                            m.reactions.forEach(function(reaction) {
-                                reaction.users.forEach(function(user) {
-                                    reaction.remove(user.id);
-                                });
-                            });
+                            m.clearReactions();
                         }
 
 
@@ -136,8 +126,6 @@ module.exports.run = async (client, message, args, dbMessage) => {
                         ended: false
                     }, {
                         ended: true
-                    }).then(() => {
-                        console.log(`doc updated`);
                     });
                 }, 10000);
                 //}, 600000);
