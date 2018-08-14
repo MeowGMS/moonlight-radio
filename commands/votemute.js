@@ -67,7 +67,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     }, function(err, msgs) {
                         if (msgs.in_favor > msgs.against) {
                             let embed = new Discord.RichEmbed()
-                                .setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
+                                //.setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
                                 .addField(`Информация`, `${userForPunish} был замучен на \`${punishTime}\` **минут**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
                                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                                 .setColor(`#00D11A`)
@@ -96,9 +96,11 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 }).then(() => console.log(`db doc deleted`))
                             }, punishTime);
 
-                        } else if (msgs.in_favor <= msgs.against) {
+                        } 
+
+                        if (msgs.in_favor <= msgs.against) {
                             let embed = new Discord.RichEmbed()
-                                .setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
+                                //.setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
                                 .addField(`Информация`, `${userForPunish} не был замучен\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
                                 .setColor(`#F01717`)
                                 .setFooter(`${m.guild.name}`)
@@ -109,7 +111,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             });
                         }
                     });
-                }, 5000);
+                }, 10000);
                 //}, 600000);
             });
 
