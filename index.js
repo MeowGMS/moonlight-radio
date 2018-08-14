@@ -54,6 +54,30 @@ mongoose.connect(process.env.mongo_url, {
 
 client.on("ready", async () => {
     console.log(` - ${client.user.username} онлайн на ${client.guilds.size} серверах!\n\n======================================`);
+
+    let nowTimeStamp = Date.now()
+
+    dbMessage.find({
+        ended: false
+    }).where('unmuteTime').lte(nowTimeStamp).exec(function(err, msgs) {
+        client.guilds.get('468327359687426049').members.get(msgs.punishableID).removeRole(config.muteRoleID);
+        console.log(`${client.guilds.get('468327359687426049').members.get(msgs.punishableID)} был размучен`);
+    });
+
+    dbMessage.find({
+        ended: false
+    }).where('unmuteTime').gt(nowTimeStamp).exec(function(err, msgs) {
+
+        let newUnmuteTimeInMs = msgs.unmuteTime - nowTimeStamp;
+
+        client.guilds.get('468327359687426049').members.get(msgs.punishableID).addRole(config.muteRoleID);
+        console.log(`${client.guilds.get('468327359687426049').members.get(msgs.punishableID)} был замучен и будет размучен через ${Math.floor(newUnmuteTimeInMs / 1000)}`);
+
+        setTimeout(() => {
+            client.guilds.get('468327359687426049').members.get(msgs.punishableID).removeRole(config.muteRoleID);
+            console.log(`${client.guilds.get('468327359687426049').members.get(msgs.punishableID)} был размучен`);
+        }, newUnmuteTimeInMs);
+    });
 });
 
 client.on('messageReactionAdd', (reaction, user) => {
@@ -62,9 +86,23 @@ client.on('messageReactionAdd', (reaction, user) => {
     if (reaction.emoji.name == "✅" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
             id: reaction.message.id
-        }, function(err, msgs) {
-            msgs.in_favor += 1;
-            msgs.save();
+            ended: false
+        }).then(voting => {
+            if (voting) {
+                dbMessage.findOne({
+                    id: reaction.message.id
+                    ended: false
+                }, function(err, msgs) {
+
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+
+                    msgs.in_favor += 1;
+                    msgs.save();
+                });
+            } else {
+                return;
+            }
         });
 
         let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
@@ -77,9 +115,22 @@ client.on('messageReactionAdd', (reaction, user) => {
     if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
             id: reaction.message.id
-        }, function(err, msgs) {
-            msgs.against += 1;
-            msgs.save();
+            ended: false
+        }).then(voting => {
+            if (voting) {
+                dbMessage.findOne({
+                    id: reaction.message.id
+                }, function(err, msgs) {
+
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+
+                    msgs.against += 1;
+                    msgs.save();
+                });
+            } else {
+                return;
+            }
         });
 
         let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
@@ -104,6 +155,10 @@ client.on('messageReactionRemove', (reaction, user) => {
                     id: reaction.message.id,
                     ended: false
                 }, function(err, msgs) {
+
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+
                     msgs.in_favor -= 1;
                     msgs.save();
                 });
@@ -122,6 +177,9 @@ client.on('messageReactionRemove', (reaction, user) => {
                     id: reaction.message.id,
                     ended: false
                 }, function(err, msgs) {
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+
                     msgs.against -= 1;
                     msgs.save();
                 });
