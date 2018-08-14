@@ -22,18 +22,15 @@ module.exports.run = async (client, message, args, dbMessage) => {
     let titlesArray = [''];
 
     if (lastSymbol == 'm' || lastSymbol == 'м') {
-        console.log(1);
-        titlesArray = ['минуту', 'минуты', 'минут'];
+        titlesArray = ['минута', 'минуты', 'минут'];
         let multNum = 60000;
         let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
     } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
-        console.log(2);
         titlesArray = ['час', 'часа', 'часов'];
         let multNum = 3600000;
         let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
     } else {
-        console.log(3);
-        titlesArray = ['минуту', 'минуты', 'минут'];
+        titlesArray = ['минута', 'минуты', 'минут'];
         let multNum = 60000;
         let punishTime = parseInt(messageArray[2], 10);
     }
@@ -98,8 +95,25 @@ module.exports.run = async (client, message, args, dbMessage) => {
                         ended: false
                     }, function(err, msgs) {
                         if (msgs.in_favor > msgs.against) {
+
+                            let titlesArray2 = [''];
+
+                            if (lastSymbol == 'm' || lastSymbol == 'м') {
+                                titlesArray2 = ['минуту', 'минуты', 'минут'];
+                                let multNum = 60000;
+                                let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
+                            } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
+                                titlesArray2 = ['час', 'часа', 'часов'];
+                                let multNum = 3600000;
+                                let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
+                            } else {
+                                titlesArray2 = ['минуту', 'минуты', 'минут'];
+                                let multNum = 60000;
+                                let punishTime = parseInt(messageArray[2], 10);
+                            }
+
                             let embed = new Discord.RichEmbed()
-                                .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` ${declOfNum(punishTime, titlesArray)}**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
+                                .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` ${declOfNum(punishTime, titlesArray2)}**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
                                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                                 .setColor(`#00D11A`)
                                 .setFooter(`${m.guild.name}`)
@@ -144,11 +158,12 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                     });
 
-                    dbMessage.findOneAndUpdate({
+                    dbMessage.findOne({
                         punishableID: userForPunish.id,
                         ended: false
-                    }, {
-                        ended: true
+                    }, function(err, msgs) {
+                        msgs.ended = true;
+                        msgs.save().then(() => console.log(`db doc updated`));
                     });
                 }, 20000);
                 //}, 600000);
