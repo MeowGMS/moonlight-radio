@@ -44,7 +44,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                 .setTimestamp()
 
             //client.guilds.get('468327359687426049').channels.get(config.votesChannelID).send(`\`\`\` \`\`\``, {
-            message.channel.sen.send(`\`\`\` \`\`\``, {
+            message.channel.send(`\`\`\` \`\`\``, {
                 embed
             }).then(m => {
                 m.react(`✅`).then(() => m.react(`❌`));
