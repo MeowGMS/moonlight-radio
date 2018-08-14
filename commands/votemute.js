@@ -119,7 +119,9 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             });
 
                             m.reactions.forEach(function(reaction) {
-                                reaction.remove();
+                                for (var i = 0; i <= reaction.count; i++) {
+                                    reaction.remove();
+                                }
                             });
                         }
                     });
