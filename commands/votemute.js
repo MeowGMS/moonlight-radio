@@ -57,7 +57,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
             let embed = new Discord.RichEmbed()
                 .setAuthor(`${message.author.tag}`, `${message.author.avatarURL}`)
                 .addField(`Кого наказывают?`, `${userForPunish}`, true)
-                .addField(`Время мута`, `${punishTime} ${declOfNum(count, titlesArray)}`, true)
+                .addField(`Время мута`, `${punishTime} ${declOfNum(punishTime, titlesArray)}`, true)
                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                 .setThumbnail(`${userForPunish.avatarURL}`)
                 .setColor(`#36393E`)
