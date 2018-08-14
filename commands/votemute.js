@@ -49,7 +49,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                 client.guilds.get('468327359687426049').channels.get('478567412028145685').fetchMessage(m.id).then(() => {
                     console.log(`Сообщение ID: ${m.id} получено`);
                 });
-                
+
 
                 let notTimestamp = Date.now();
 
@@ -91,7 +91,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                             msgs.save();
 
-                            
+
 
                             setTimeout(() => {
                                 m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
@@ -104,7 +104,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             }, punishTime * 5000);
                             //}, punishTime * 60000);
 
-                        } 
+                        }
 
                         if (msgs.in_favor <= msgs.against) {
                             let embed = new Discord.RichEmbed()
@@ -119,9 +119,9 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             });
 
                             m.reactions.forEach(function(reaction) {
-                                for (var i = 0; i <= reaction.count; i++) {
-                                    reaction.remove();
-                                }
+                                reaction.users.forEach(function(user) {
+                                    reaction.remove(user.id);
+                                });
                             });
                         }
                     });
