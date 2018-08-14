@@ -62,7 +62,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
     if (reaction.emoji.name == "✅" && reaction.message.channel.id == config.votesChannelID && !user.bot) {
         dbMessage.findOne({
-            id: message.id
+            id: reaction.message.id
         }, function(err, msgs) {
             msgs.in_favor += 1;
             msgs.save();
@@ -77,7 +77,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
     if (reaction.emoji.name == "❌" && reaction.message.channel.id == config.votesChannelID && !user.bot) {
         dbMessage.findOne({
-            id: message.id
+            id: reaction.message.id
         }, function(err, msgs) {
             msgs.against += 1;
             msgs.save();
@@ -99,7 +99,7 @@ client.on('messageReactionRemove', (reaction, user) => {
 
     if (reaction.emoji.name == "✅" && reaction.message.channel.id == config.votesChannelID && !user.bot) {
         dbMessage.findOne({
-            id: message.id
+            id: reaction.message.id
         }, function(err, msgs) {
             msgs.in_favor += 1;
             msgs.save();
@@ -108,7 +108,7 @@ client.on('messageReactionRemove', (reaction, user) => {
 
     if (reaction.emoji.name == "❌" && reaction.message.channel.id == config.votesChannelID && !user.bot) {
         dbMessage.findOne({
-            id: message.id
+            id: reaction.message.id
         }, function(err, msgs) {
             msgs.against -= 1;
             msgs.save();
