@@ -70,14 +70,18 @@ client.on("ready", async () => {
                     if (nowTimeStamp >= msgs.unmuteTime) {
                         member.removeRole(config.muteRoleID);
                         console.log(`${member.user.tag} размучен`);
+                        msgs.ended = true;
+                        msgs.save()
                     } else {
                         member.addRole(config.muteRoleID)
                         setTimeout(() => {
                             member.removeRole(config.muteRoleID);
                             console.log(`${member.user.tag} был замучен и будет размучен через ${Math.round((msgs.unmuteTime - nowTimeStamp) / 1000)}`);
                             msgs.ended = true;
+                            msgs.save()
                         }, msgs.unmuteTime - nowTimeStamp);
                     }
+                    
                 });
             }
         });
