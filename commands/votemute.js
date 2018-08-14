@@ -20,18 +20,19 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
     let lastSymbol = messageArray[2][messageArray[2].length-1];
     let titlesArray = [''];
+    let multNum = 0;
 
     if (lastSymbol == 'm' || lastSymbol == 'м') {
         titlesArray = ['минута', 'минуты', 'минут'];
-        let multNum = 60000;
+        multNum = 60000;
         let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
     } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
         titlesArray = ['час', 'часа', 'часов'];
-        let multNum = 3600000;
+        multNum = 3600000;
         let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
     } else {
         titlesArray = ['минута', 'минуты', 'минут'];
-        let multNum = 60000;
+        multNum = 60000;
         let punishTime = parseInt(messageArray[2], 10);
     }
 
@@ -46,6 +47,8 @@ module.exports.run = async (client, message, args, dbMessage) => {
     if (userForPunish.bot) return message.channel.send(`**\\❗ Невозможно замутить бота**`).then(m => m.delete(5000));
     if (message.guild.members.get(userForPunish.id).roles.has(config.muteRoleID)) return message.channel.send(`**\\❌ Пользователь уже замучен**`).then(m => m.delete(5000));
     //if (userForPunish.id == message.author.id) return message.channel.send(`**\\❌ Невозможно замутить самого себя**`).then(m => m.delete(5000));
+
+    let punishTimeMs = multNum * punishTime;
 
     dbMessage.findOne({
         punishableID: userForPunish.id,
@@ -82,7 +85,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     msgChannelID: m.channel.id,
                     in_favor: 1,
                     against: 0,
-                    punishTime: punishTime * multNum,
+                    punishTime: punishTimeMs,
                     authorID: message.author.id,
                     punishableID: userForPunish.id,
                     resultsTime: notTimestamp + 600000,
