@@ -18,15 +18,15 @@ module.exports.run = async (client, message, args, dbMessage) => {
     let reasonArgCount = prefix.length + command.length + messageArray[1].length + messageArray[2].length + 3;
     let punishReason = message.content.slice(reasonArgCount);
 
-    if (!userForPunish) return message.channel.send(`**❌ Юзер не найден**`).then(m => m.delete(5000));
-    if (!punishTime) return message.channel.send(`**❗ Укажите время мута**`).then(m => m.delete(5000));
-    if (!messageArray[3]) return message.channel.send(`**❗ Укажите причину мута**`).then(m => m.delete(5000));
+    if (!userForPunish) return message.channel.send(`**\\❌ Юзер не найден**`).then(m => m.delete(5000));
+    if (!punishTime) return message.channel.send(`**\\❗ Укажите время мута**`).then(m => m.delete(5000));
+    if (!messageArray[3]) return message.channel.send(`**\\❗ Укажите причину мута**`).then(m => m.delete(5000));
 
     dbMessage.findOne({
         punishableID: userForPunish.id
     }).then((voting) => {
         if (voting) {
-            return message.channel.send(`**❌ Голосование по поводу мута данного юзера уже запущено**`)
+            return message.channel.send(`**\\❌ Голосование по поводу мута данного юзера уже запущено**`).then(m => m.delete(5000));
         } else {
 
             let embed = new Discord.RichEmbed()
@@ -34,29 +34,80 @@ module.exports.run = async (client, message, args, dbMessage) => {
                 .addField(`Кого наказывают?`, `**Юзер:** ${userForPunish}\n**ID:** \`${userForPunish.id}\`\n**Тег:** \`${userForPunish.tag}\``, true)
                 .addField(`Время мута`, `${punishTime} минут`, true)
                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
-                .setFooter(`${message.guild.name}`)
                 .setThumbnail(`${userForPunish.avatarURL}`)
+                .setColor(`#36393E`)
+                .setFooter(`${message.guild.name}`)
                 .setTimestamp()
 
             client.guilds.get('468327359687426049').channels.get(config.votesChannelID).send(`\`\`\` \`\`\``, {
                 embed
             }).then(m => {
-                m.react(`✅`);
-                m.react(`❌`)
+                m.react(`✅`).then(() => m.react(`❌`));
                 client.channels.get(config.votesChannelID).fetchMessage(m.id).catch(console.error);
+
+                let notTimestamp = Date.now();
 
                 new dbMessage({
                     id: m.id,
                     in_favor: 1,
                     against: 0,
-                    time: punishTime * 60 * 1000,
+                    punishTime: punishTime * 60000,
                     authorID: message.author.id,
-                    punishableID: userForPunish.id
+                    punishableID: userForPunish.id,
+                    resultsTime: notTimestamp + 600000,
+                    punishReason: punishReason
                 }).save().then(() => {
                     console.log(`db doc created`);
-                });    
+                });
+
+                setTimeout(() => {
+                    dbMessage.findOne({
+                        punishableID: userForPunish.id
+                    }, function(err, msgs) {
+                        if (msgs.in_favor > msgs.against) {
+                            let embed = new Discord.RichEmbed()
+                                .setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
+                                .addField(`Информация`, `${userForPunish} был замучен на \`${punishTime}\` **минут**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
+                                .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
+                                .setColor(`#00D11A`)
+                                .setFooter(`${m.guild.name}`)
+                                .setTimestamp()
+
+                            m.edit(`\`\`\` \`\`\``, {
+                                embed
+                            });
+
+                            let notTimestamp = Date.now();
+
+                            msgs.unmuteTime = notTimestamp + msgs.punishTime;
+
+                            msgs.save();
+
+                            m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
+
+                            setTimeout(() => {
+                                m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
+
+                                console.log(`${userForPunish.tag} был размучен`);
+                            }, punishTime);
+                        } else if (msgs.in_favor <= msgs.against) {
+                            let embed = new Discord.RichEmbed()
+                                .setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
+                                .addField(`Информация`, `${userForPunish} не был замучен\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
+                                .setColor(`#F01717`)
+                                .setFooter(`${m.guild.name}`)
+                                .setTimestamp()
+
+                            m.edit(`\`\`\` \`\`\``, {
+                                embed
+                            });
+                        }
+                    });
+                }, 5000);
+                //}, 600000);
             });
-            
+
+
         }
     })
 
