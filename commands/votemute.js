@@ -9,9 +9,30 @@ module.exports.run = async (client, message, args, dbMessage) => {
     const otherArgs = messageArray.slice(1);
     const command = messageArray[0].slice(prefix.length).toLowerCase();
 
+    function declOfNum(number, titles) {
+        cases = [2, 0, 1, 1, 1, 2];
+        return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+    }
+
     if (!message.member.roles.has(config.voteRoleID) && !message.member.hasPermission('ADMINISTRATOR')) return message.channel.send(`**❌ У Вас нет прав использовать данную команду**`).then(m => m.delete(5000));
 
     message.delete(300);
+
+    let lastSymbol = messageArray[2][messageArray[2].length-1];
+
+    if (lastSymbol == 'm' || lastSymbol == 'м') {
+        let titlesArray = ['минута', 'минуты', 'минут'];
+        let multNum = 60000;
+        let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
+    } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
+        let titlesArray = ['час', 'часа', 'часов'];
+        let multNum = 3600000;
+        let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
+    } else {
+        let titlesArray = ['минута', 'минуты', 'минут'];
+        let multNum = 60000;
+        let punishTime = parseInt(messageArray[2], 10);
+    }
 
     let userForPunish = message.mentions.users.first();
     let punishTime = parseInt(messageArray[2], 10);
@@ -22,7 +43,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
     if (!punishTime) return message.channel.send(`**\\❗ Укажите время мута**`).then(m => m.delete(5000));
     if (!messageArray[3]) return message.channel.send(`**\\❗ Укажите причину мута**`).then(m => m.delete(5000));
     if (userForPunish.bot) return message.channel.send(`**\\❗ Невозможно замутить бота**`).then(m => m.delete(5000));
-    if (message.guild.members.get(userForPunish.id).roles.has(config.muteRoleID)) return message.channel.send(`**\\❌ Пользователь уже замучен**`);
+    if (message.guild.members.get(userForPunish.id).roles.has(config.muteRoleID)) return message.channel.send(`**\\❌ Пользователь уже замучен**`).then(m => m.delete(5000));
     //if (userForPunish.id == message.author.id) return message.channel.send(`**\\❌ Невозможно замутить самого себя**`).then(m => m.delete(5000));
 
     dbMessage.findOne({
@@ -33,12 +54,10 @@ module.exports.run = async (client, message, args, dbMessage) => {
             return message.channel.send(`**\\❌ Голосование по поводу мута данного юзера уже запущено**`).then(m => m.delete(5000));
         } else {
 
-            if ()
-
             let embed = new Discord.RichEmbed()
                 .setAuthor(`${message.author.tag}`, `${message.author.avatarURL}`)
                 .addField(`Кого наказывают?`, `${userForPunish}`, true)
-                .addField(`Время мута`, `${punishTime} минут${letter}`, true)
+                .addField(`Время мута`, `${punishTime} ${declOfNum(count, titlesArray)}`, true)
                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                 .setThumbnail(`${userForPunish.avatarURL}`)
                 .setColor(`#36393E`)
@@ -50,10 +69,10 @@ module.exports.run = async (client, message, args, dbMessage) => {
                 embed
             }).then(m => {
                 m.react(`✅`).then(() => m.react(`❌`));
-                client.channels.get(message.channel.id).fetchMessage(m.id).then(() => {
+
+                message.channel.fetchMessage(m.id).then(() => {
                     console.log(`Сообщение ID: ${m.id} получено`);
                 });
-
 
                 let notTimestamp = Date.now();
 
@@ -98,7 +117,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                                 console.log(`${userForPunish.tag} был размучен`);
                             }, punishTime * 5000);
-                            //}, punishTime * 60000);
+                            //}, punishTime * multNum);
 
                             m.clearReactions();
 
@@ -127,7 +146,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     }, {
                         ended: true
                     });
-                }, 10000);
+                }, 20000);
                 //}, 600000);
             });
 
