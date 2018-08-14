@@ -106,8 +106,8 @@ client.on("ready", async () => {
                     if (nowTimeStamp >= msgs.resultsTime) {
                         console.log(`Голосование закончено`);
                         let msg = client.channels.get(msgs.msgChannelID).fetchMessage(msgs.id);
-                        let in_favorCount msg.reactions.get('✅').count;
-                        let againstCount msg.reactions.get('❌').count;
+                        let in_favorCount = msg.reactions.get('✅').count;
+                        let againstCount = msg.reactions.get('❌').count;
 
 
 
