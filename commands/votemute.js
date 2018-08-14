@@ -46,7 +46,9 @@ module.exports.run = async (client, message, args, dbMessage) => {
                 embed
             }).then(m => {
                 m.react(`✅`).then(() => m.react(`❌`));
-                client.channels.get(config.votesChannelID).fetchMessage(m.id).catch(console.error);
+                client.guilds.get('468327359687426049').channels.get('478567412028145685').fetchMessage(m.id).then(() => {
+                    console.log(`Сообщение ID: ${m.id} получено`);
+                });
                 
 
                 let notTimestamp = Date.now();
