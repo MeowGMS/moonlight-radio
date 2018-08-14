@@ -19,6 +19,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
     message.delete(300);
 
     let lastSymbol = messageArray[2][messageArray[2].length-1];
+    let titlesArray = [''];
 
     console.log(lastSymbol);
 
