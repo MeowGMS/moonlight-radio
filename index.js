@@ -62,7 +62,7 @@ client.on("ready", async () => {
 
     let nowTimeStamp = Date.now()
 
-    client.guilds.get('199181202383568896').members.forEach((member) => {
+    /*client.guilds.get('199181202383568896').members.forEach((member) => {
         dbMessage.findOne({
             punishableID: member.user.id,
             endedVoting: true,
@@ -92,7 +92,7 @@ client.on("ready", async () => {
             }
         });
 
-    });
+    }); */
 
 
 });
