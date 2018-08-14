@@ -20,6 +20,8 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
     let lastSymbol = messageArray[2][messageArray[2].length-1];
 
+    console.log(lastSymbol);
+
     if (lastSymbol == 'm' || lastSymbol == 'м') {
         let titlesArray = ['минута', 'минуты', 'минут'];
         let multNum = 60000;
