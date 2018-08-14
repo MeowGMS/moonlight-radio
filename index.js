@@ -10,6 +10,7 @@ const prefix = 'v.'
 const messageSchema = new Schema({
     id: String,
     msgChannelID: String,
+    letter: String,
     in_favor: Number,
     against: Number,
     punishTime: Number,
@@ -130,32 +131,30 @@ client.on("ready", async () => {
 
                                     let titlesArray2 = [''];
 
-                                    if (lastSymbol == 'm' || lastSymbol == 'м') {
+                                    if (msgs.letter == 'm' || msgs.letter == 'м') {
                                         titlesArray2 = ['минуту', 'минуты', 'минут'];
-                                        let multNum = 60000;
-                                        let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
-                                    } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
+                                        let punishTime = msgs.punishTime;
+                                    } else if (msgs.letter == 'h' || msgs.letter == 'ч') {
                                         titlesArray2 = ['час', 'часа', 'часов'];
-                                        let multNum = 3600000;
-                                        let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
+                                        let punishTime = msgs.punishTime;
+                                        
                                     } else {
                                         titlesArray2 = ['минуту', 'минуты', 'минут'];
-                                        let multNum = 60000;
-                                        let punishTime = parseInt(messageArray[2], 10);
+                                        let punishTime = msgs.punishTime;
                                     }
 
                                     let embed = new Discord.RichEmbed()
-                                        .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` ${declOfNum(msgs.punishTime, titlesArray2)}**\n\n**Соотношение за/против: ${in_favorCount} \\✅/ ${against} \\❌**\n\n**Начал голосование:** ${msg.author}`)
-                                        .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
+                                        .addField(`Информация`, `**${member.user} был замучен на \`${msgs.punishTime}\` ${declOfNum(msgs.punishTime, titlesArray2)}**\n\n**Соотношение за/против: ${in_favorCount} \\✅/ ${against} \\❌**\n\n**Начал голосование:** ${msg.author}`)
+                                        .addField(`Причина`, `\`\`\`fix\n${msgs.punishReason}\`\`\``)
                                         .setColor(`#00D11A`)
                                         .setFooter(`${msg.guild.name}`)
                                         .setTimestamp()
 
-                                    m.edit(`\`\`\` \`\`\``, {
+                                    msg.edit(`\`\`\` \`\`\``, {
                                         embed
                                     });
 
-                                    m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
+                                    msg.guild.members.get(member.user.id).addRole(config.muteRoleID);
 
                                     let notTimestamp = Date.now();
 
@@ -163,11 +162,10 @@ client.on("ready", async () => {
 
                                     msgs.save();
                                     setTimeout(() => {
-                                        m.guild.members.get(msgs.punishableID).removeRole(config.muteRoleID);
+                                        msg.guild.members.get(msgs.punishableID).removeRole(config.muteRoleID);
 
                                         console.log(`${client.fetchUser(msgs.punishableID).tag} был размучен`);
-                                    }, punishTime * 5000);
-                                    //}, punishTime * multNum);
+                                    }, msgs.punishTime);
 
                                     msg.clearReactions();
 
@@ -202,6 +200,8 @@ client.on("ready", async () => {
                         }, 2000);
 
                     } else {
+                        
+                        
 
                         console.log(`Голосование запущено заного и будет закончено через ${Math.floor((msgs.resultsTime - nowTimeStamp) / 1000)} секунд`);
                         setTimeout(() => {
@@ -216,38 +216,45 @@ client.on("ready", async () => {
 
                             dbMessage.findOne({
                                 punishableID: member.user.id,
-                                ended: false
+                                endedVoting: false
                             }, function(err, msgs) {
+                                   let msg = client.channels.get(msgs.msgChannelID).fetchMessage(msgs.id);
+                                   let in_favorCount = msg.reactions.get('✅').count;
+                                   let againstCount = msg.reactions.get('❌').count;
+                                
+                                 msgs.against = againstCount;
+                                msgs.in_favor = in_favorCount;
+                                msgs.ended = true;
+                                msgs.save();
+                                
                                 if (in_favorCount > againstCount) {
+                                    
 
                                     let titlesArray2 = [''];
 
-                                    if (lastSymbol == 'm' || lastSymbol == 'м') {
+                                    if (msgs.letter == 'm' || msgs.letter == 'м') {
                                         titlesArray2 = ['минуту', 'минуты', 'минут'];
-                                        let multNum = 60000;
-                                        let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
-                                    } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
+                                        let punishTime = msgs.punishTime;
+                                    } else if (msgs.letter == 'h' || msgs.letter == 'ч') {
                                         titlesArray2 = ['час', 'часа', 'часов'];
-                                        let multNum = 3600000;
-                                        let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
+                                        let punishTime = msgs.punishTime;
                                     } else {
                                         titlesArray2 = ['минуту', 'минуты', 'минут'];
-                                        let multNum = 60000;
-                                        let punishTime = parseInt(messageArray[2], 10);
+                                        let punishTime = msgs.punishTime;
                                     }
 
                                     let embed = new Discord.RichEmbed()
-                                        .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` ${declOfNum(msgs.punishTime, titlesArray2)}**\n\n**Соотношение за/против: ${in_favorCount} \\✅/ ${against} \\❌**\n\n**Начал голосование:** ${msg.author}`)
-                                        .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
+                                        .addField(`Информация`, `**${member.user} был замучен на \`${msgs.punishTime}\` мс**\n\n**Соотношение за/против: ${in_favorCount} \\✅/ ${againstCount} \\❌**\n\n**Начал голосование:** ${msg.author}`)
+                                        .addField(`Причина`, `\`\`\`fix\n${msgs.punishReason}\`\`\``)
                                         .setColor(`#00D11A`)
                                         .setFooter(`${msg.guild.name}`)
                                         .setTimestamp()
 
-                                    m.edit(`\`\`\` \`\`\``, {
+                                    msg.edit(`\`\`\` \`\`\``, {
                                         embed
                                     });
 
-                                    m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
+                                    msg.guild.members.get(member.user.id).addRole(config.muteRoleID);
 
                                     let notTimestamp = Date.now();
 
@@ -255,11 +262,10 @@ client.on("ready", async () => {
 
                                     msgs.save();
                                     setTimeout(() => {
-                                        m.guild.members.get(msgs.punishableID).removeRole(config.muteRoleID);
+                                        msg.guild.members.get(msgs.punishableID).removeRole(config.muteRoleID);
 
                                         console.log(`${client.fetchUser(msgs.punishableID).tag} был размучен`);
-                                    }, punishTime * 5000);
-                                    //}, punishTime * multNum);
+                                    }, msgs.punishTime);
 
                                     msg.clearReactions();
 
@@ -280,16 +286,6 @@ client.on("ready", async () => {
                                 }
 
 
-                            });
-
-                            dbMessage.findOne({
-                                punishableID: member.user.id,
-                                ended: false
-                            }, function(err, msgs) {
-                                msgs.against = againstCount;
-                                msgs.in_favor = in_favorCount;
-                                msgs.ended = true;
-                                msgs.save();
                             });
                         }, msgs.resultsTime - nowTimeStamp);
                     }
