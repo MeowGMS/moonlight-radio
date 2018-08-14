@@ -97,7 +97,8 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 dbMessage.deleteOne({
                                     punishableID: userForPunish.id
                                 }).then(() => console.log(`db doc deleted`))
-                            }, punishTime);
+                            }, punishTime * 5000);
+                            //}, punishTime * 60000);
 
                         } 
 
