@@ -22,6 +22,8 @@ module.exports.run = async (client, message, args, dbMessage) => {
     if (!punishTime) return message.channel.send(`**\\❗ Укажите время мута**`).then(m => m.delete(5000));
     if (!messageArray[3]) return message.channel.send(`**\\❗ Укажите причину мута**`).then(m => m.delete(5000));
     if (userForPunish.bot) return message.channel.send(`**\\❗ Невозможно замутить бота**`).then(m => m.delete(5000));
+    if (message.guild.members.get(userForPunish.id).roles.has(config.muteRoleID)) return message.channel.send(`**\\❌ Пользователь уже замучен**`);
+    //if (userForPunish.id == message.author.id) return message.channel.send(`**\\❌ Невозможно замутить самого себя**`).then(m => m.delete(5000));
 
     dbMessage.findOne({
         punishableID: userForPunish.id
@@ -45,6 +47,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
             }).then(m => {
                 m.react(`✅`).then(() => m.react(`❌`));
                 client.channels.get(config.votesChannelID).fetchMessage(m.id).catch(console.error);
+                m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
 
                 let notTimestamp = Date.now();
 
@@ -84,7 +87,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                             msgs.save();
 
-                            m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
+                            
 
                             setTimeout(() => {
                                 m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
