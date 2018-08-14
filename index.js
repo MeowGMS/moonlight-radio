@@ -85,7 +85,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
     if (reaction.emoji.name == "✅" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
-            id: reaction.message.id
+            id: reaction.message.id,
             ended: false
         }).then(voting => {
             if (voting) {
@@ -114,7 +114,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
     if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
-            id: reaction.message.id
+            id: reaction.message.id,
             ended: false
         }).then(voting => {
             if (voting) {
