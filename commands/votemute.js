@@ -119,10 +119,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             });
 
                             m.reactions.forEach(function(reaction) {
-                                reaction.fetchUsers().forEach(function(user) {
-                                    reaction.remove(user.id);
-                                    console.log(`Реакция ${user.tag} удалена`);
-                                });
+                                reaction.remove();
                             });
                         }
                     });
