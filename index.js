@@ -59,7 +59,7 @@ client.on("ready", async () => {
 client.on('messageReactionAdd', (reaction, user) => {
     let reactionMember = reaction.message.guild.members.get(user.id);
 
-    if (reaction.emoji.name == "✅" && !user.bot && reactionMember.roles.has(config.voteRoleID)) {
+    if (reaction.emoji.name == "✅" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
             id: reaction.message.id
         }, function(err, msgs) {
@@ -74,7 +74,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         }
     }
 
-    if (reaction.emoji.name == "❌" && !user.bot && reactionMember.roles.has(config.voteRoleID)) {
+    if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
             id: reaction.message.id
         }, function(err, msgs) {
@@ -94,21 +94,38 @@ client.on('messageReactionAdd', (reaction, user) => {
 client.on('messageReactionRemove', (reaction, user) => {
     let reactionMember = reaction.message.guild.members.get(user.id);
 
-    if (reaction.emoji.name == "✅" && !user.bot && reactionMember.roles.has(config.voteRoleID)) {
+    if (reaction.emoji.name == "✅" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
-            id: reaction.message.id
-        }, function(err, msgs) {
-            msgs.in_favor += 1;
-            msgs.save();
+            id: reaction.message.id,
+            ended: false
+        }).then((voting) => {
+            if (voting) {
+                dbMessage.findOne({
+                    id: reaction.message.id,
+                    ended: false
+                }, function(err, msgs) {
+                    msgs.in_favor -= 1;
+                    msgs.save();
+                });
+            } else return;
         });
+
     }
 
-    if (reaction.emoji.name == "❌" && !user.bot && reactionMember.roles.has(config.voteRoleID)) {
+    if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
-            id: reaction.message.id
-        }, function(err, msgs) {
-            msgs.against -= 1;
-            msgs.save();
+            id: reaction.message.id,
+            ended: false
+        }).then((voting) => {
+            if (voting) {
+                dbMessage.findOne({
+                    id: reaction.message.id,
+                    ended: false
+                }, function(err, msgs) {
+                    msgs.against -= 1;
+                    msgs.save();
+                });
+            } else return;
         });
     }
 });
