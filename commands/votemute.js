@@ -26,7 +26,8 @@ module.exports.run = async (client, message, args, dbMessage) => {
     //if (userForPunish.id == message.author.id) return message.channel.send(`**\\❌ Невозможно замутить самого себя**`).then(m => m.delete(5000));
 
     dbMessage.findOne({
-        punishableID: userForPunish.id
+        punishableID: userForPunish.id,
+        ended: false
     }).then((voting) => {
         if (voting) {
             return message.channel.send(`**\\❌ Голосование по поводу мута данного юзера уже запущено**`).then(m => m.delete(5000));
@@ -42,7 +43,8 @@ module.exports.run = async (client, message, args, dbMessage) => {
                 .setFooter(`${message.guild.name}`)
                 .setTimestamp()
 
-            client.guilds.get('468327359687426049').channels.get(config.votesChannelID).send(`\`\`\` \`\`\``, {
+            //client.guilds.get('468327359687426049').channels.get(config.votesChannelID).send(`\`\`\` \`\`\``, {
+            message.channel.sen.send(`\`\`\` \`\`\``, {
                 embed
             }).then(m => {
                 m.react(`✅`).then(() => m.react(`❌`));
@@ -97,10 +99,6 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
 
                                 console.log(`${userForPunish.tag} был размучен`);
-
-                                dbMessage.deleteOne({
-                                    punishableID: userForPunish.id
-                                }).then(() => console.log(`db doc deleted`))
                             }, punishTime * 5000);
                             //}, punishTime * 60000);
 
