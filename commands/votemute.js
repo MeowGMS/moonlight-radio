@@ -106,10 +106,10 @@ module.exports.run = async (client, message, args, dbMessage) => {
                             let punishTime = parseInt(messageArray[2], 10);
 
                             let embed = new Discord.RichEmbed()
-                                .addField(`Информация`, `**${userForPunish}** лишился прав общаться в голосовых и текстовых каналах\n\n**Начал голосование:** ${message.author}`)
-                                .addField(`За`, `${msgs.in_favor}`, true)
-                                .addField(`Против`, `${msgs.against}`, true)
-                                .addField(`Время`, `${punishTime}`)
+                                .addField(`Информация`, `**${userForPunish} лишился прав общаться в голосовых и текстовых каналах**\n\n**Начал голосование:** ${message.author}`)
+                                .addField(`За ✅`, `${msgs.in_favor}`, true)
+                                .addField(`Против ❌`, `${msgs.against}`, true)
+                                .addField(`Время`, `${punishTime} ${declOfNum(punishTime, titlesArray2)}`, true)
                                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                                 .setColor(`#00D11A`)
                                 .setThumbnail(`${userForPunish.avatarURL}`)
@@ -148,7 +148,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                         if (msgs.in_favor <= msgs.against) {
                             let embed = new Discord.RichEmbed()
                                 .addField(`Информация`, `**Для мута ${userForPunish} недостаточно голосов\n\nНачал голосование: ${message.author}**`)
-                                .addField(`За`, `${msgs.in_favor}`, true)
+                                .addField(`За ✅`, `${msgs.in_favor}`, true)
                                 .addField(`Против`, `${msgs.against}`, true)
                                 .setColor(`#F01717`)
                                 .setFooter(`${m.guild.name}`)
