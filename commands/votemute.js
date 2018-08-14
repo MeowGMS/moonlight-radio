@@ -34,7 +34,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
             let embed = new Discord.RichEmbed()
                 .setAuthor(`${message.author.tag}`, `${message.author.avatarURL}`)
-                .addField(`Кого наказывают?`, `**Юзер:** ${userForPunish}\n**ID:** \`${userForPunish.id}\`\n**Тег:** \`${userForPunish.tag}\``, true)
+                .addField(`Кого наказывают?`, `${userForPunish}`, true)
                 .addField(`Время мута`, `${punishTime} минут`, true)
                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                 .setThumbnail(`${userForPunish.avatarURL}`)
@@ -73,7 +73,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                         if (msgs.in_favor > msgs.against) {
                             let embed = new Discord.RichEmbed()
                                 //.setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
-                                .addField(`Информация`, `${userForPunish} был замучен на \`${punishTime}\` **минут**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
+                                .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` минут**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
                                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                                 .setColor(`#00D11A`)
                                 .setFooter(`${m.guild.name}`)
@@ -109,7 +109,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                         if (msgs.in_favor <= msgs.against) {
                             let embed = new Discord.RichEmbed()
                                 //.setAuthor(`${m.guild.name}`, `${m.guild.iconURL}`)
-                                .addField(`Информация`, `${userForPunish} не был замучен\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
+                                .addField(`Информация`, `**${userForPunish} не был замучен\n\nСоотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌\n\n**Начал голосование: ${message.author}**`)
                                 .setColor(`#F01717`)
                                 .setFooter(`${m.guild.name}`)
                                 .setTimestamp()
