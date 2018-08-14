@@ -56,8 +56,8 @@ client.on("ready", async () => {
     console.log(` - ${client.user.username} онлайн на ${client.guilds.size} серверах!\n\n======================================`);
 
     let nowTimeStamp = Date.now()
-    
-    client.guilds.get('477053926210928660').forEach((member) => {
+
+    client.guilds.get('477053926210928660').members.forEach((member) => {
         dbMessage.findOne({
             punishableID: member.user.id,
             ended: false
