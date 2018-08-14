@@ -18,23 +18,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
     message.delete(300);
 
-    let lastSymbol = messageArray[2][messageArray[2].length - 1];
-    let titlesArray = [''];
-    let multNum = 0;
-
-    if (lastSymbol == 'm' || lastSymbol == 'м') {
-        titlesArray = ['минута', 'минуты', 'минут'];
-        multNum = 60000;
-        let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
-    } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
-        titlesArray = ['час', 'часа', 'часов'];
-        multNum = 3600000;
-        let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
-    } else {
-        titlesArray = ['минута', 'минуты', 'минут'];
-        multNum = 60000;
-        let punishTime = parseInt(messageArray[2], 10);
-    }
+    let titlesArray = ['минута', 'минуты', 'минут'];
 
     let userForPunish = message.mentions.users.first();
     let punishTime = parseInt(messageArray[2], 10);
@@ -43,12 +27,16 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
     if (!userForPunish) return message.channel.send(`**\\❌ Юзер не найден**`).then(m => m.delete(5000));
     if (!punishTime) return message.channel.send(`**\\❗ Укажите время мута**`).then(m => m.delete(5000));
-    if (!messageArray[3]) return message.channel.send(`**\\❗ Укажите причину мута**`).then(m => m.delete(5000));
+    if (punishTime < 10 || punishTime > 30) return message.channel.send(`**\\❗ Время мута - от 10 до 30 минут**`);
     if (userForPunish.bot) return message.channel.send(`**\\❗ Невозможно замутить бота**`).then(m => m.delete(5000));
     if (message.guild.members.get(userForPunish.id).roles.has(config.muteRoleID)) return message.channel.send(`**\\❌ Пользователь уже замучен**`).then(m => m.delete(5000));
     if (userForPunish.id == message.author.id) return message.channel.send(`**\\❌ Невозможно замутить самого себя**`).then(m => m.delete(5000));
+    
+    let punishTimeMs = punishTime * 60000;
 
-    let punishTimeMs = multNum * punishTime;
+    if (!messageArray[3]) {
+        let punishReason = 'Без причины';
+    }
 
     dbMessage.findOne({
         punishableID: userForPunish.id,
@@ -113,26 +101,15 @@ module.exports.run = async (client, message, args, dbMessage) => {
                     }, function(err, msgs) {
                         if (msgs.in_favor > msgs.against) {
 
-                            let titlesArray2 = [''];
-
-                            if (lastSymbol == 'm' || lastSymbol == 'м') {
-                                titlesArray2 = ['минуту', 'минуты', 'минут'];
-                                let multNum = 60000;
-                                let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
-                            } else if (lastSymbol == 'h' || lastSymbol == 'ч') {
-                                titlesArray2 = ['час', 'часа', 'часов'];
-                                let multNum = 3600000;
-                                let punishTime = parseInt(messageArray[2].slice(0, -1), 10);
-                            } else {
-                                titlesArray2 = ['минуту', 'минуты', 'минут'];
-                                let multNum = 60000;
-                                let punishTime = parseInt(messageArray[2], 10);
-                            }
+                            let titlesArray2 = ['минуту', 'минуты', 'минут'];
+                            let multNum = 60000;
+                            let punishTime = parseInt(messageArray[2], 10);
 
                             let embed = new Discord.RichEmbed()
                                 .addField(`Информация`, `**${userForPunish} был замучен на \`${punishTime}\` ${declOfNum(punishTime, titlesArray2)}**\n\n**Соотношение за/против: ${msgs.in_favor} \\✅/ ${msgs.against} \\❌**\n\n**Начал голосование:** ${message.author}`)
                                 .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
                                 .setColor(`#00D11A`)
+                                .setThumbnail(`${userForPunish.avatarURL}`)
                                 .setFooter(`${m.guild.name}`)
                                 .setTimestamp()
 
@@ -171,6 +148,7 @@ module.exports.run = async (client, message, args, dbMessage) => {
                                 .setColor(`#F01717`)
                                 .setFooter(`${m.guild.name}`)
                                 .setTimestamp()
+                                .setThumbnail(`${userForPunish.avatarURL}`)
 
                             m.edit(`\`\`\` \`\`\``, {
                                 embed
@@ -178,7 +156,6 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                             m.clearReactions();
                         }
-
 
                     });
 
