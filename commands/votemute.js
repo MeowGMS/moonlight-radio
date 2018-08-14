@@ -107,10 +107,10 @@ module.exports.run = async (client, message, args, dbMessage) => {
 
                             let embed = new Discord.RichEmbed()
                                 .addField(`Информация`, `**${userForPunish} лишился прав общаться в голосовых и текстовых каналах**\n\n**Начал голосование:** ${message.author}`)
-                                .addField(`За ✅`, `${msgs.in_favor}`, true)
-                                .addField(`Против ❌`, `${msgs.against}`, true)
+                                .addField(`За \\✅`, `${msgs.in_favor}`, true)
+                                .addField(`Против \\❌`, `${msgs.against}`, true)
                                 .addField(`Время`, `${punishTime} ${declOfNum(punishTime, titlesArray2)}`, true)
-                                .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
+                                .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``, true)
                                 .setColor(`#00D11A`)
                                 .setThumbnail(`${userForPunish.avatarURL}`)
                                 .setFooter(`${m.guild.name}`)
