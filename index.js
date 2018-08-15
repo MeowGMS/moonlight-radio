@@ -7,6 +7,8 @@ const client = new Discord.Client();
 const Schema = mongoose.Schema;
 const prefix = 'v.'
 
+let cooldown = new Set();
+
 const messageSchema = new Schema({
     id: String,
     msgChannelID: String,
