@@ -76,7 +76,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                 var absoluteSeconds = Math.floor(seconds);
                                 var s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds;
 
-                                return message.channel.send(`**Для повторного использования команды вам осталось ${m}м ${s}с**`).then(m => m.delete(500));
+                                return message.channel.send(`**Для повторного использования команды вам осталось ${m}м ${s}с**`).then(m => m.delete(3000));
 
                         } else {
                             users.nextUseCommandTime = nowTimeStamp + 600000;
