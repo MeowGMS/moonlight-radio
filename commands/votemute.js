@@ -23,11 +23,11 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
     let userForPunish = message.mentions.users.first();
     let punishTime = parseInt(messageArray[2], 10);
     if (!punishTime) return message.channel.send(`**\\❗ Укажите время мута**`).then(m => m.delete(5000));
-    
+
     let reasonArgCount = prefix.length + command.length + messageArray[1].length + messageArray[2].length + 3;
     let punishReason = message.content.slice(reasonArgCount);
     if (!userForPunish) return message.channel.send(`**\\❌ Юзер не найден**`).then(m => m.delete(5000));
-    
+
     if (punishTime < 1 || punishTime > 30) return message.channel.send(`**\\❗ Время мута - от 1 до 30 минут**`).then(m => m.delete(5000));
     if (userForPunish.bot) return message.channel.send(`**\\❗ Невозможно замутить бота**`).then(m => m.delete(5000));
     if (message.guild.members.get(userForPunish.id).roles.has(config.muteRoleID)) return message.channel.send(`**\\❌ Пользователь уже замучен**`).then(m => m.delete(5000));
@@ -41,7 +41,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
     dbMessage.findOne({
         punishableID: userForPunish.id,
-        ended: false
+        endedVoting: false
     }).then((voting) => {
         if (voting) {
             return message.channel.send(`**\\❌ Голосование по поводу мута данного юзера уже запущено**`).then(m => m.delete(5000));
@@ -83,7 +83,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                             users.nextUseCommandTime = nowTimeStamp + 600000;
                             users.save();
 
-    
+
                             let embed = new Discord.RichEmbed()
                                 .setAuthor(`${message.author.tag}`, `${message.author.avatarURL}`)
                                 .addField(`Кого наказывают?`, `${userForPunish}`, true)
@@ -171,6 +171,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                                     ended: false
                                                 }, function(err, msgs) {
                                                     msgs.ended = true;
+                                                    msgs.endedVoting = true;
                                                     msgs.save();
                                                 });
                                             }, punishTimeMs);
@@ -194,6 +195,15 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                             });
 
                                             m.clearReactions();
+
+                                            dbMessage.findOne({
+                                                punishableID: userForPunish.id,
+                                                ended: false
+                                            }, function(err, msgs) {
+                                                msgs.ended = true;
+                                                msgs.endedVoting = true;
+                                                msgs.save();
+                                            });
                                         }
 
                                     });
@@ -307,6 +317,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                                 ended: false
                                             }, function(err, msgs) {
                                                 msgs.ended = true;
+                                                msgs.endedVoting = true;
                                                 msgs.save();
                                             });
                                         }, punishTimeMs);
@@ -330,6 +341,15 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                         });
 
                                         m.clearReactions();
+
+                                        dbMessage.findOne({
+                                            punishableID: userForPunish.id,
+                                            ended: false
+                                        }, function(err, msgs) {
+                                            msgs.ended = true;
+                                            msgs.endedVoting = true;
+                                            msgs.save();
+                                        });
                                     }
 
                                 });
