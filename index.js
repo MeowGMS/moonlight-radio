@@ -98,11 +98,9 @@ client.on("ready", async () => {
                             msgs.save()
                         }, msgs.unmuteTime - nowTimeStamp);
                     }
-
                 });
             }
         });
-
     }); */
 
 
@@ -140,9 +138,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         }
     } else {
         reaction.remove(user.id);
-    }
-
-    if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
+    } else if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
             id: reaction.message.id,
             ended: false
@@ -169,7 +165,7 @@ client.on('messageReactionAdd', (reaction, user) => {
             reaction.message.reactions.get('✅').remove(user.id);
         }
     } else {
-        reaction.remove(user.id);
+        reaction.remove();
     }
 
 });
@@ -197,11 +193,7 @@ client.on('messageReactionRemove', (reaction, user) => {
             } else return;
         });
 
-    } else {
-        reaction.remove(user.id);
-    }
-
-    if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
+    } else if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
             id: reaction.message.id,
             ended: false
@@ -220,7 +212,7 @@ client.on('messageReactionRemove', (reaction, user) => {
             } else return;
         });
     } else {
-        reaction.remove(user.id);
+        reaction.remove();
     }
 });
 
