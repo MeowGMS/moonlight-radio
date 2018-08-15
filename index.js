@@ -126,9 +126,7 @@ client.on('messageReactionAdd', (reaction, user) => {
                     msgs.in_favor += 1;
                     msgs.save();
                 });
-            } else {
-                return;
-            }
+            } else return;
         });
 
         let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
@@ -162,9 +160,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         if (otherReactionUser) {
             reaction.message.reactions.get('✅').remove(user.id);
         }
-    } else {
-        reaction.remove();
-    }
+    } 
 
 });
 
@@ -209,8 +205,6 @@ client.on('messageReactionRemove', (reaction, user) => {
                 });
             } else return;
         });
-    } else {
-        reaction.remove();
     }
 });
 
