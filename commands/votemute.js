@@ -22,11 +22,12 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
     let userForPunish = message.mentions.users.first();
     let punishTime = parseInt(messageArray[2], 10);
+    if (!punishTime) return message.channel.send(`**\\❗ Укажите время мута**`).then(m => m.delete(5000));
+    
     let reasonArgCount = prefix.length + command.length + messageArray[1].length + messageArray[2].length + 3;
     let punishReason = message.content.slice(reasonArgCount);
-
     if (!userForPunish) return message.channel.send(`**\\❌ Юзер не найден**`).then(m => m.delete(5000));
-    if (!punishTime) return message.channel.send(`**\\❗ Укажите время мута**`).then(m => m.delete(5000));
+    
     if (punishTime < 1 || punishTime > 30) return message.channel.send(`**\\❗ Время мута - от 1 до 30 минут**`).then(m => m.delete(5000));
     if (userForPunish.bot) return message.channel.send(`**\\❗ Невозможно замутить бота**`).then(m => m.delete(5000));
     if (message.guild.members.get(userForPunish.id).roles.has(config.muteRoleID)) return message.channel.send(`**\\❌ Пользователь уже замучен**`).then(m => m.delete(5000));
