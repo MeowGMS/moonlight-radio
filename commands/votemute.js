@@ -63,7 +63,6 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                             let cooldown = users.nextUseCommandTime - nowTimeStamp;
 
-                            setTimeout(function() {
 
                                 var hours = cooldown / (1000 * 60 * 60);
                                 var absoluteHours = Math.floor(hours);
@@ -77,132 +76,133 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                 var absoluteSeconds = Math.floor(seconds);
                                 var s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds;
 
-                                return message.channel.send(`**Для повторного использования команды вам осталось ${h}ч ${m}м ${s}с**`)
-                            }, 500);
+                                return message.channel.send(`**Для повторного использования команды вам осталось ${m}м ${s}с**`)
+
+                        } else {
+                            users.nextUseCommandTime = nowTimeStamp + 600000;
+                            users.save();
+    
+    
+                            let embed = new Discord.RichEmbed()
+                                .setAuthor(`${message.author.tag}`, `${message.author.avatarURL}`)
+                                .addField(`Кого наказывают?`, `${userForPunish}`, true)
+                                .addField(`Время мута`, `${punishTime} ${declOfNum(punishTime, titlesArray)}`, true)
+                                .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
+                                .setThumbnail(`${userForPunish.avatarURL}`)
+                                .setColor(`#36393E`)
+                                .setFooter(`${message.guild.name}`)
+                                .setTimestamp()
+    
+                            message.channel.send(`\`\`\` \`\`\``, {
+                                embed
+                            }).then(m => {
+                                m.react(`✅`).then(() => m.react(`❌`));
+    
+                                message.channel.fetchMessage(m.id).then(() => {
+                                    console.log(`Сообщение ID: ${m.id} получено`);
+                                });
+    
+    
+    
+                                new dbMessage({
+                                    id: m.id,
+                                    msgChannelID: m.channel.id,
+                                    in_favor: 1,
+                                    against: 0,
+                                    punishTime: punishTimeMs,
+                                    authorID: message.author.id,
+                                    punishableID: userForPunish.id,
+                                    resultsTime: nowTimestamp + 30000,
+                                    punishReason: punishReason,
+                                    ended: false,
+                                    endedVoting: false,
+                                    in_favorIDs: message.author.id
+                                }).save();
+    
+                                setTimeout(() => {
+    
+                                    dbMessage.findOne({
+                                        punishableID: userForPunish.id,
+                                        endedVoting: false
+                                    }, function(err, msgs) {
+                                        msgs.endedVoting = true;
+                                        msgs.save();
+                                    });
+    
+                                    dbMessage.findOne({
+                                        punishableID: userForPunish.id,
+                                        ended: false
+                                    }, function(err, msgs) {
+                                        if (msgs.in_favor > msgs.against) {
+    
+                                            let titlesArray2 = ['минута', 'минуты', 'минут'];
+                                            let punishTime = parseInt(messageArray[2], 10);
+    
+                                            let embed = new Discord.RichEmbed()
+                                                .addField(`Информация`, `**${userForPunish} лишился прав общаться в голосовых и текстовых каналах**\n\n**Начал голосование:** ${message.author}`)
+                                                .addField(`За \\✅`, `${msgs.in_favor}`, true)
+                                                .addField(`Против \\❌`, `${msgs.against}`, true)
+                                                .addField(`Время`, `${punishTime} ${declOfNum(punishTime, titlesArray2)}`, true)
+                                                .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``, true)
+                                                .setColor(`#00D11A`)
+                                                .setThumbnail(`${userForPunish.avatarURL}`)
+                                                .setFooter(`${m.guild.name}`)
+                                                .setTimestamp()
+    
+                                            m.edit({
+                                                embed
+                                            });
+    
+                                            m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
+    
+                                            let nowTimestamp = Date.now();
+    
+                                            msgs.unmuteTime = nowTimestamp + msgs.punishTime;
+    
+                                            msgs.save();
+                                            setTimeout(() => {
+                                                m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
+    
+                                                console.log(`${userForPunish.tag} был размучен`);
+    
+                                                dbMessage.findOne({
+                                                    punishableID: userForPunish.id,
+                                                    ended: false
+                                                }, function(err, msgs) {
+                                                    msgs.ended = true;
+                                                    msgs.save();
+                                                });
+                                            }, punishTimeMs);
+    
+                                            m.clearReactions();
+    
+                                        }
+    
+                                        if (msgs.in_favor <= msgs.against) {
+                                            let embed = new Discord.RichEmbed()
+                                                .addField(`Информация`, `**Для мута ${userForPunish} недостаточно голосов\n\nНачал голосование: ${message.author}**`)
+                                                .addField(`За ✅`, `${msgs.in_favor}`, true)
+                                                .addField(`Против`, `${msgs.against}`, true)
+                                                .setColor(`#F01717`)
+                                                .setFooter(`${m.guild.name}`)
+                                                .setTimestamp()
+                                                .setThumbnail(`${userForPunish.avatarURL}`)
+    
+                                            m.edit({
+                                                embed
+                                            });
+    
+                                            m.clearReactions();
+                                        }
+    
+                                    });
+    
+    
+    
+                                }, 30000);
+                            });
                         }
 
-                        users.nextUseCommandTime = nowTimeStamp + 600000;
-                        users.save();
-
-
-                        let embed = new Discord.RichEmbed()
-                            .setAuthor(`${message.author.tag}`, `${message.author.avatarURL}`)
-                            .addField(`Кого наказывают?`, `${userForPunish}`, true)
-                            .addField(`Время мута`, `${punishTime} ${declOfNum(punishTime, titlesArray)}`, true)
-                            .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``)
-                            .setThumbnail(`${userForPunish.avatarURL}`)
-                            .setColor(`#36393E`)
-                            .setFooter(`${message.guild.name}`)
-                            .setTimestamp()
-
-                        message.channel.send(`\`\`\` \`\`\``, {
-                            embed
-                        }).then(m => {
-                            m.react(`✅`).then(() => m.react(`❌`));
-
-                            message.channel.fetchMessage(m.id).then(() => {
-                                console.log(`Сообщение ID: ${m.id} получено`);
-                            });
-
-
-
-                            new dbMessage({
-                                id: m.id,
-                                msgChannelID: m.channel.id,
-                                in_favor: 1,
-                                against: 0,
-                                punishTime: punishTimeMs,
-                                authorID: message.author.id,
-                                punishableID: userForPunish.id,
-                                resultsTime: nowTimestamp + 30000,
-                                punishReason: punishReason,
-                                ended: false,
-                                endedVoting: false,
-                                in_favorIDs: message.author.id
-                            }).save();
-
-                            setTimeout(() => {
-
-                                dbMessage.findOne({
-                                    punishableID: userForPunish.id,
-                                    endedVoting: false
-                                }, function(err, msgs) {
-                                    msgs.endedVoting = true;
-                                    msgs.save();
-                                });
-
-                                dbMessage.findOne({
-                                    punishableID: userForPunish.id,
-                                    ended: false
-                                }, function(err, msgs) {
-                                    if (msgs.in_favor > msgs.against) {
-
-                                        let titlesArray2 = ['минута', 'минуты', 'минут'];
-                                        let punishTime = parseInt(messageArray[2], 10);
-
-                                        let embed = new Discord.RichEmbed()
-                                            .addField(`Информация`, `**${userForPunish} лишился прав общаться в голосовых и текстовых каналах**\n\n**Начал голосование:** ${message.author}`)
-                                            .addField(`За \\✅`, `${msgs.in_favor}`, true)
-                                            .addField(`Против \\❌`, `${msgs.against}`, true)
-                                            .addField(`Время`, `${punishTime} ${declOfNum(punishTime, titlesArray2)}`, true)
-                                            .addField(`Причина`, `\`\`\`fix\n${punishReason}\`\`\``, true)
-                                            .setColor(`#00D11A`)
-                                            .setThumbnail(`${userForPunish.avatarURL}`)
-                                            .setFooter(`${m.guild.name}`)
-                                            .setTimestamp()
-
-                                        m.edit({
-                                            embed
-                                        });
-
-                                        m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
-
-                                        let nowTimestamp = Date.now();
-
-                                        msgs.unmuteTime = nowTimestamp + msgs.punishTime;
-
-                                        msgs.save();
-                                        setTimeout(() => {
-                                            m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
-
-                                            console.log(`${userForPunish.tag} был размучен`);
-
-                                            dbMessage.findOne({
-                                                punishableID: userForPunish.id,
-                                                ended: false
-                                            }, function(err, msgs) {
-                                                msgs.ended = true;
-                                                msgs.save();
-                                            });
-                                        }, punishTimeMs);
-
-                                        m.clearReactions();
-
-                                    }
-
-                                    if (msgs.in_favor <= msgs.against) {
-                                        let embed = new Discord.RichEmbed()
-                                            .addField(`Информация`, `**Для мута ${userForPunish} недостаточно голосов\n\nНачал голосование: ${message.author}**`)
-                                            .addField(`За ✅`, `${msgs.in_favor}`, true)
-                                            .addField(`Против`, `${msgs.against}`, true)
-                                            .setColor(`#F01717`)
-                                            .setFooter(`${m.guild.name}`)
-                                            .setTimestamp()
-                                            .setThumbnail(`${userForPunish.avatarURL}`)
-
-                                        m.edit({
-                                            embed
-                                        });
-
-                                        m.clearReactions();
-                                    }
-
-                                });
-
-
-
-                            }, 30000);
-                        });
                     });
 
                 } else {
