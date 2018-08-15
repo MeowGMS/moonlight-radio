@@ -46,10 +46,12 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
             return message.channel.send(`**\\❌ Голосование по поводу мута данного юзера уже запущено**`).then(m => m.delete(5000));
         } else {
 
+
             User.findOne({
                 id: message.author.id
             }).then((user) => {
                 if (user) {
+                    let nowTimestamp = Date.now();
 
                     User.findOne({
                         id: message.author.id
@@ -112,7 +114,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                 punishTime: punishTimeMs,
                                 authorID: message.author.id,
                                 punishableID: userForPunish.id,
-                                resultsTime: notTimestamp + 30000,
+                                resultsTime: nowTimestamp + 30000,
                                 punishReason: punishReason,
                                 ended: false,
                                 endedVoting: false,
@@ -155,9 +157,9 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                                         m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
 
-                                        let notTimestamp = Date.now();
+                                        let nowTimestamp = Date.now();
 
-                                        msgs.unmuteTime = notTimestamp + msgs.punishTime;
+                                        msgs.unmuteTime = nowTimestamp + msgs.punishTime;
 
                                         msgs.save();
                                         setTimeout(() => {
@@ -205,11 +207,12 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                 } else {
 
-                    let notTimestamp = Date.now();
+
+                    let nowTimestamp = Date.now();
 
                     new User({
                         id: message.author.id,
-                        nextUseCommandTime: nowTimeStamp + 600000
+                        nextUseCommandTime: nowTimestamp + 600000
                     }).save().then(() => console.log(`Аккаунт ${message.author.tag} создан`));
 
                     setTimeout(function() {
@@ -245,7 +248,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                 punishTime: punishTimeMs,
                                 authorID: message.author.id,
                                 punishableID: userForPunish.id,
-                                resultsTime: notTimestamp + 30000,
+                                resultsTime: nowTimestamp + 30000,
                                 punishReason: punishReason,
                                 ended: false,
                                 endedVoting: false,
@@ -288,9 +291,9 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                                         m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
 
-                                        let notTimestamp = Date.now();
+                                        let nowTimestamp = Date.now();
 
-                                        msgs.unmuteTime = notTimestamp + msgs.punishTime;
+                                        msgs.unmuteTime = nowTimestamp + msgs.punishTime;
 
                                         msgs.save();
                                         setTimeout(() => {
