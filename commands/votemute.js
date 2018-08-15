@@ -14,7 +14,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
         return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
     }
 
-    if (!message.member.roles.has(config.voteRoleID) && !message.member.hasPermission('ADMINISTRATOR')) return message.channel.send(`**❌ У Вас нет прав использовать данную команду**`).then(m => m.delete(5000));
+    if (!message.member.roles.has(config.voteRoleID) && !message.member.hasPermission('ADMINISTRATOR')) return message.channel.send(`**\\❌ У Вас нет прав использовать данную команду**`).then(m => m.delete(5000));
 
     message.delete(300);
 
@@ -183,8 +183,8 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                         if (msgs.in_favor <= msgs.against) {
                                             let embed = new Discord.RichEmbed()
                                                 .addField(`Информация`, `**Для мута ${userForPunish} недостаточно голосов\n\nНачал голосование: ${message.author}**`)
-                                                .addField(`За ✅`, `${msgs.in_favor}`, true)
-                                                .addField(`Против`, `${msgs.against}`, true)
+                                                .addField(`За \\✅`, `${msgs.in_favor}`, true)
+                                                .addField(`Против \\❌`, `${msgs.against}`, true)
                                                 .setColor(`#F01717`)
                                                 .setFooter(`${m.guild.name}`)
                                                 .setTimestamp()
