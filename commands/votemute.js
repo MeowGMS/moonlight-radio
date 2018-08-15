@@ -271,7 +271,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                 }, function(err, msgs) {
                                     if (msgs.in_favor > msgs.against) {
 
-                                        let titlesArray2 = ['минуту', 'минуты', 'минут'];
+                                        let titlesArray2 = ['минута', 'минуты', 'минут'];
                                         let punishTime = parseInt(messageArray[2], 10);
 
                                         let embed = new Discord.RichEmbed()
