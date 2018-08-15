@@ -22,9 +22,16 @@ const messageSchema = new Schema({
     ended: Boolean,
     endedVoting: Boolean,
     in_favorIDs: [String],
-    againstIDs: [String]
+    againstIDs: [String],
+    nextUseCommandTime: Number
 });
 const dbMessage = mongoose.model('message', messageSchema);
+
+const userSchema = new Schema({
+    id: String,
+    nextUseCommandTime: Number
+});
+const User = mongoose.model('users', userSchema);
 
 client.commands = new Discord.Collection();
 
@@ -61,6 +68,8 @@ client.on("ready", async () => {
     console.log(` - ${client.user.username} онлайн на ${client.guilds.size} серверах!\n\n======================================`);
 
     let nowTimeStamp = Date.now()
+
+    console.log(`Время сейчас: ${nowTimeStamp}`);
 
     /*client.guilds.get('199181202383568896').members.forEach((member) => {
         dbMessage.findOne({
@@ -127,6 +136,8 @@ client.on('messageReactionAdd', (reaction, user) => {
         if (otherReactionUser) {
             reaction.message.reactions.get('❌').remove(user.id);
         }
+    } else {
+        reaction.remove(user.id);
     }
 
     if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
@@ -155,6 +166,8 @@ client.on('messageReactionAdd', (reaction, user) => {
         if (otherReactionUser) {
             reaction.message.reactions.get('✅').remove(user.id);
         }
+    } else {
+        reaction.remove(user.id);
     }
 
 });
@@ -182,6 +195,8 @@ client.on('messageReactionRemove', (reaction, user) => {
             } else return;
         });
 
+    } else {
+        reaction.remove(user.id);
     }
 
     if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
@@ -202,19 +217,34 @@ client.on('messageReactionRemove', (reaction, user) => {
                 });
             } else return;
         });
+    } else {
+        reaction.remove(user.id);
     }
 });
 
 client.on("message", async message => {
 
     if (!message.content.startsWith(prefix)) return;
+    if (message.author.bot) return;
+    if (message.channel.type === "dm") return;
+
+    if (cooldown.has(message.author.id)) {
+        message.delete();
+        return message.channel.send(`**Вы должны подождать \`5\` секунд, прежде чем использовать команду**`)
+    }
+    if (!message.member.hasPermission("ADMINISTRATOR")) {
+        cooldown.add(message.author.id);
+    }
+    setTimeout(() => {
+        cooldown.delete(message.author.id)
+    }, 5000);
 
     let messageArray = message.content.split(/\s+/g);
     let cmd = messageArray[0];
     let args = messageArray.slice(1);
 
     let commandfile = client.commands.get(cmd.slice(prefix.length));
-    if (commandfile) commandfile.run(client, message, args, dbMessage);
+    if (commandfile) commandfile.run(client, message, args, dbMessage, User);
 });
 
 client.login(process.env.token).catch(console.error);
