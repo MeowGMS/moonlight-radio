@@ -136,8 +136,6 @@ client.on('messageReactionAdd', (reaction, user) => {
         if (otherReactionUser) {
             reaction.message.reactions.get('❌').remove(user.id);
         }
-    } else {
-        reaction.remove(user.id);
     } else if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
         dbMessage.findOne({
             id: reaction.message.id,
