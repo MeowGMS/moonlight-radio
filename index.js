@@ -108,7 +108,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
             }, {
                 id: '426236825997148160',
-                allow: ['MANAGE_CHANNELS']
+                allow: ['MANAGE_CHANNELS'],
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
             }]).then((channel) => {
                 channel.setParent(privateCategory);
@@ -171,7 +171,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
             }, {
                 id: '426236825997148160',
-                allow: ['MANAGE_CHANNELS']
+                allow: ['MANAGE_CHANNELS'],
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
             }]).then((channel) => {
                 channel.setParent(privateCategory);
