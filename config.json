@@ -1,4 +1,8 @@
 {
     "muteRoleID": "383751438565769216",
-    "voteRoleID": "474142414098137100"
+    "voteRoleID": "474142414098137100",
+    "privateCategoryID": "468327359687426052",
+    "createPrivateChannelID": "468327359687426053",
+    "gamingCategoryID": "479529076596408320",
+    "createGamingChannelID": "479529126156566528"
 }
