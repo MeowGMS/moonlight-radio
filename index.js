@@ -5,7 +5,7 @@ const fs = require("fs");
 const config = require("./config.json");
 const client = new Discord.Client();
 const Schema = mongoose.Schema;
-const prefix = 'v.'
+const prefix = 'v.';
 
 let cooldown = new Set();
 
@@ -207,14 +207,16 @@ client.on('messageReactionAdd', (reaction, user) => {
                     msgs.in_favor += 1;
                     msgs.save();
                 });
-            } else return;
-        });
-
-        let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
+                
+                let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
 
         if (otherReactionUser) {
             reaction.message.reactions.get('❌').remove(user.id).catch(console.error);
         }
+            } else return;
+        });
+
+        
     } else if (reaction.emoji.name == "❌" && !user.bot) {
         dbMessage.findOne({
             id: reaction.message.id,
@@ -231,16 +233,16 @@ client.on('messageReactionAdd', (reaction, user) => {
                     msgs.against += 1;
                     msgs.save();
                 });
+                
+                let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
+
+                if (otherReactionUser) {
+                  reaction.message.reactions.get('✅').remove(user.id).catch(console.error);
+                }
             } else {
                 return;
             }
         });
-
-        let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
-
-        if (otherReactionUser) {
-            reaction.message.reactions.get('✅').remove(user.id).catch(console.error);
-        }
     }
 
 });
