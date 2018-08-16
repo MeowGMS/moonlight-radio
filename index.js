@@ -188,7 +188,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
 
 client.on('messageReactionAdd', (reaction, user) => {
-    let reactionMember = reaction.message.guild.members.get(user.id);
+    let reactionMember = reaction.message.guild.members.get(user.id).catch(console.error);
 
     if (reaction.emoji.name == "✅" && !user.bot) {
         dbMessage.findOne({
@@ -210,10 +210,10 @@ client.on('messageReactionAdd', (reaction, user) => {
             } else return;
         });
 
-        let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
+        let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id).catch(console.error);
 
         if (otherReactionUser) {
-            reaction.message.reactions.get('❌').remove(user.id);
+            reaction.message.reactions.get('❌').remove(user.id).catch(console.error);
         }
     } else if (reaction.emoji.name == "❌" && !user.bot) {
         dbMessage.findOne({
@@ -236,7 +236,7 @@ client.on('messageReactionAdd', (reaction, user) => {
             }
         });
 
-        let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
+        let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id).catch(console.error);
 
         if (otherReactionUser) {
             reaction.message.reactions.get('✅').remove(user.id).catch(console.error);
@@ -246,7 +246,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 });
 
 client.on('messageReactionRemove', (reaction, user) => {
-    let reactionMember = reaction.message.guild.members.get(user.id);
+    let reactionMember = reaction.message.guild.members.get(user.id).catch(console.error);
 
     if (reaction.emoji.name == "✅" && !user.bot) {
         dbMessage.findOne({
