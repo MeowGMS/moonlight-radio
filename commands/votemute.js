@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
     if (!message.member.roles.has(config.voteRoleID) && !message.member.hasPermission('ADMINISTRATOR')) return message.channel.send(`**\\❌ У Вас нет прав использовать данную команду**`).then(m => m.delete(5000));
 
-    message.delete(300);
+    message.delete(300).catch(console.error);
 
     let titlesArray = ['минута', 'минуты', 'минут'];
 
@@ -44,7 +44,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
         endedVoting: false
     }).then((voting) => {
         if (voting) {
-            return message.channel.send(`**\\❌ Голосование по поводу мута данного юзера уже запущено**`).then(m => m.delete(5000));
+            return message.channel.send(`**\\❌ Голосование по поводу мута данного юзера уже запущено**`).then(m => m.delete(5000)).catch(console.error);
         } else {
 
 
@@ -65,19 +65,19 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                             let cooldown = users.nextUseCommandTime - nowTimeStamp;
 
 
-                                var hours = cooldown / (1000 * 60 * 60);
-                                var absoluteHours = Math.floor(hours);
-                                var h = absoluteHours > 9 ? absoluteHours : '0' + absoluteHours;
+                            var hours = cooldown / (1000 * 60 * 60);
+                            var absoluteHours = Math.floor(hours);
+                            var h = absoluteHours > 9 ? absoluteHours : '0' + absoluteHours;
 
-                                var minutes = (hours - absoluteHours) * 60;
-                                var absoluteMinutes = Math.floor(minutes);
-                                var m = absoluteMinutes > 9 ? absoluteMinutes : '0' + absoluteMinutes;
+                            var minutes = (hours - absoluteHours) * 60;
+                            var absoluteMinutes = Math.floor(minutes);
+                            var m = absoluteMinutes > 9 ? absoluteMinutes : '0' + absoluteMinutes;
 
-                                var seconds = (minutes - absoluteMinutes) * 60;
-                                var absoluteSeconds = Math.floor(seconds);
-                                var s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds;
+                            var seconds = (minutes - absoluteMinutes) * 60;
+                            var absoluteSeconds = Math.floor(seconds);
+                            var s = absoluteSeconds > 9 ? absoluteSeconds : '0' + absoluteSeconds;
 
-                                return message.channel.send(`**Для повторного использования команды вам осталось ${m}м ${s}с**`).then(m => m.delete(3000));
+                            return message.channel.send(`**Для повторного использования команды вам осталось ${m}м ${s}с**`).then(m => m.delete(3000)).catch(console.error);
 
                         } else {
                             users.nextUseCommandTime = nowTimeStamp + 600000;
@@ -97,7 +97,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                             message.channel.send(`\`\`\` \`\`\``, {
                                 embed
                             }).then(m => {
-                                m.react(`✅`).then(() => m.react(`❌`));
+                                m.react(`✅`).then(() => m.react(`❌`)).catch(console.error);
 
                                 message.channel.fetchMessage(m.id).then(() => {
                                     console.log(`Сообщение ID: ${m.id} получено`);
@@ -152,7 +152,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                                             m.edit({
                                                 embed
-                                            });
+                                            }).catch(console.error);
 
                                             m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
 
@@ -176,7 +176,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                                 });
                                             }, punishTimeMs);
 
-                                            m.clearReactions();
+                                            m.clearReactions().catch(console.error);
 
                                         }
 
@@ -192,9 +192,9 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                                             m.edit({
                                                 embed
-                                            });
+                                            }).catch(console.error);
 
-                                            m.clearReactions();
+                                            m.clearReactions().catch(console.error);
 
                                             dbMessage.findOne({
                                                 punishableID: userForPunish.id,
@@ -208,10 +208,8 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                                     });
 
-
-
                                 }, 30000);
-                            });
+                            }).catch(console.error);
                         }
 
                     });
@@ -243,7 +241,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                         message.channel.send(`\`\`\` \`\`\``, {
                             embed
                         }).then(m => {
-                            m.react(`✅`).then(() => m.react(`❌`));
+                            m.react(`✅`).then(() => m.react(`❌`)).catch(console.error);
 
                             message.channel.fetchMessage(m.id).then(() => {
                                 console.log(`Сообщение ID: ${m.id} получено`);
@@ -298,7 +296,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                                         m.edit({
                                             embed
-                                        });
+                                        }).catch(console.error);
 
                                         m.guild.members.get(userForPunish.id).addRole(config.muteRoleID);
 
@@ -322,7 +320,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                             });
                                         }, punishTimeMs);
 
-                                        m.clearReactions();
+                                        m.clearReactions().catch(console.error);
 
                                     }
 
@@ -338,9 +336,9 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                                         m.edit({
                                             embed
-                                        });
+                                        }).catch(console.error);
 
-                                        m.clearReactions();
+                                        m.clearReactions().catch(console.error);
 
                                         dbMessage.findOne({
                                             punishableID: userForPunish.id,
@@ -356,7 +354,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
 
                             }, 30000);
-                        });
+                        }).catch(console.error);
                     }, 500);
                 }
             });
