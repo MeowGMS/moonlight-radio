@@ -162,7 +162,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                                             msgs.save();
                                             setTimeout(() => {
-                                                m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
+                                                message.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
 
                                                 console.log(`${userForPunish.tag} был размучен`);
 
@@ -308,7 +308,7 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
 
                                         msgs.save();
                                         setTimeout(() => {
-                                            m.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
+                                            message.guild.members.get(userForPunish.id).removeRole(config.muteRoleID);
 
                                             console.log(`${userForPunish.tag} был размучен`);
 
@@ -329,8 +329,8 @@ module.exports.run = async (client, message, args, dbMessage, User) => {
                                     if (msgs.in_favor <= msgs.against) {
                                         let embed = new Discord.RichEmbed()
                                             .addField(`Информация`, `**Для мута ${userForPunish} недостаточно голосов\n\nНачал голосование: ${message.author}**`)
-                                            .addField(`За ✅`, `${msgs.in_favor}`, true)
-                                            .addField(`Против`, `${msgs.against}`, true)
+                                            .addField(`За \\✅`, `${msgs.in_favor}`, true)
+                                            .addField(`Против \\❌`, `${msgs.against}`, true)
                                             .setColor(`#F01717`)
                                             .setFooter(`${m.guild.name}`)
                                             .setTimestamp()
