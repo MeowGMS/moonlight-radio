@@ -88,7 +88,6 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
     if (newUserChannel != undefined && oldUserChannel == undefined) {
 
-
         if (newUserChannel.id == config.createPrivateChannelID) {
 
             mlGuild.createChannel('Private', "voice", [{
@@ -111,6 +110,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
             }]).then((channel) => {
                 channel.setParent(privateCategory);
+                channel.setBitrate(128);
                 if (newUserChannel) {
                     newMember.setVoiceChannel(channel.id);
                 }
@@ -174,6 +174,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
             }]).then((channel) => {
                 channel.setParent(privateCategory);
+                channel.setBitrate(128);
                 if (newUserChannel) {
                     newMember.setVoiceChannel(channel.id);
                 }
