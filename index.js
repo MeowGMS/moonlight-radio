@@ -201,8 +201,8 @@ client.on('messageReactionAdd', (reaction, user) => {
                     ended: false
                 }, function(err, msgs) {
 
-                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
-                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);
 
                     msgs.in_favor += 1;
                     msgs.save();
@@ -225,8 +225,8 @@ client.on('messageReactionAdd', (reaction, user) => {
                     id: reaction.message.id
                 }, function(err, msgs) {
 
-                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
-                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);
 
                     msgs.against += 1;
                     msgs.save();
@@ -239,7 +239,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
 
         if (otherReactionUser) {
-            reaction.message.reactions.get('✅').remove(user.id).catch(console.error);;
+            reaction.message.reactions.get('✅').remove(user.id).catch(console.error);
         }
     }
 
@@ -259,8 +259,8 @@ client.on('messageReactionRemove', (reaction, user) => {
                     ended: false
                 }, function(err, msgs) {
 
-                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
-                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);
 
                     msgs.in_favor -= 1;
                     msgs.save();
