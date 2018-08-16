@@ -100,7 +100,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 id: newMember.guild.id,
                 allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD'],
                 deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'MANAGE_CHANNELS']
-            }/*, {
+            }, {
                 id: '383751438565769216',
                 deny: ['SPEAK']
             }, {
@@ -110,37 +110,8 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 id: '426236825997148160',
                 allow: ['MANAGE_CHANNELS']
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
-            }*/]).then((channel) => {
+            }]).then((channel) => {
                 channel.setParent(privateCategory);
-                if (newUserChannel) {
-                    newMember.setVoiceChannel(channel.id);
-                }
-
-            });
-        }
-
-        if (newUserChannel.id == config.createGamingChannelID) {
-
-            mlGuild.createChannel('Gaming private', "voice", [{
-                id: newMember.user,
-                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS'],
-                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
-            }, {
-                id: newMember.guild.id,
-                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD'],
-                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'MANAGE_CHANNELS']
-            }/*, {
-                id: '383751438565769216',
-                deny: ['SPEAK']
-            }, {
-                id: '368090830990344192',
-                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
-            }, {
-                id: '426236825997148160',
-                allow: ['MANAGE_CHANNELS']
-                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
-            }*/]).then((channel) => {
-                channel.setParent(gamingCategory);
                 if (newUserChannel) {
                     newMember.setVoiceChannel(channel.id);
                 }
@@ -153,19 +124,6 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     if (newUserChannel == undefined && oldUserChannel != undefined) {
 
         if ((oldUserChannel.parentID == config.privateCategoryID) && (oldUserChannel.id != config.createPrivateChannelID)) {
-
-            let voiceCount = 0;
-
-            oldUserChannel.members.forEach((voiceUser) => {
-                voiceCount++;
-            })
-
-            if (voiceCount == 0) {
-                oldUserChannel.delete();
-            }
-        }
-
-        if ((oldUserChannel.parentID == config.gamingCategoryID) && (oldUserChannel.id != config.createGamingChannelID)) {
 
             let voiceCount = 0;
 
@@ -194,18 +152,6 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             }
         }
 
-        if ((oldUserChannel.parentID === config.gamingCategoryID) && (oldUserChannel.id != config.createGamingChannelID)) {
-
-            let voiceCount = 0;
-
-            oldUserChannel.members.forEach((voiceUser) => {
-                voiceCount++;
-            })
-
-            if (voiceCount == 0) {
-                oldUserChannel.delete();
-            }
-        }
 
         if (newUserChannel.id == config.createPrivateChannelID) {
 
@@ -217,7 +163,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 id: newMember.guild.id,
                 allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD'],
                 deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'MANAGE_CHANNELS']
-            }/*, {
+            }, {
                 id: '383751438565769216',
                 deny: ['SPEAK']
             }, {
@@ -227,37 +173,8 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 id: '426236825997148160',
                 allow: ['MANAGE_CHANNELS']
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
-            }*/]).then((channel) => {
+            }]).then((channel) => {
                 channel.setParent(privateCategory);
-                if (newUserChannel) {
-                    newMember.setVoiceChannel(channel.id);
-                }
-
-            });
-        }
-
-        if (newUserChannel.id == config.createGamingChannelID) {
-
-            mlGuild.createChannel('Gaming private', "voice", [{
-                id: newMember.user,
-                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS'],
-                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
-            }, {
-                id: newMember.guild.id,
-                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD'],
-                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'MANAGE_CHANNELS']
-            }/*, {
-                id: '383751438565769216',
-                deny: ['SPEAK']
-            }, {
-                id: '368090830990344192',
-                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
-            }, {
-                id: '426236825997148160',
-                allow: ['MANAGE_CHANNELS']
-                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
-            }*/]).then((channel) => {
-                channel.setParent(gamingCategory);
                 if (newUserChannel) {
                     newMember.setVoiceChannel(channel.id);
                 }
