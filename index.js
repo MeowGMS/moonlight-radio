@@ -109,13 +109,13 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 allow: ['MANAGE_CHANNELS'],
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
             }]).then((channel) => {
-                channel.setParent(privateCategory);
-                channel.setBitrate(128);
+                channel.setParent(privateCategory).catch(console.error);
+                channel.setBitrate(128).catch(console.error);
                 if (newUserChannel) {
-                    newMember.setVoiceChannel(channel.id);
+                    newMember.setVoiceChannel(channel.id).catch(console.error);
                 }
 
-            });
+            }).catch(console.error);
         }
 
     }
@@ -131,7 +131,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             })
 
             if (voiceCount == 0) {
-                oldUserChannel.delete();
+                oldUserChannel.delete().catch(console.error);
             }
         }
 
@@ -147,7 +147,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             })
 
             if (voiceCount == 0) {
-                oldUserChannel.delete();
+                oldUserChannel.delete().catch(console.error);
             }
         }
 
@@ -173,13 +173,13 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 allow: ['MANAGE_CHANNELS'],
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
             }]).then((channel) => {
-                channel.setParent(privateCategory);
-                channel.setBitrate(128);
+                channel.setParent(privateCategory).catch(console.error);
+                channel.setBitrate(128).catch(console.error);
                 if (newUserChannel) {
-                    newMember.setVoiceChannel(channel.id);
+                    newMember.setVoiceChannel(channel.id).catch(console.error);
                 }
 
-            });
+            }).catch(console.error);
         }
     }
 
@@ -201,8 +201,8 @@ client.on('messageReactionAdd', (reaction, user) => {
                     ended: false
                 }, function(err, msgs) {
 
-                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
-                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
 
                     msgs.in_favor += 1;
                     msgs.save();
@@ -225,8 +225,8 @@ client.on('messageReactionAdd', (reaction, user) => {
                     id: reaction.message.id
                 }, function(err, msgs) {
 
-                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
-                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
 
                     msgs.against += 1;
                     msgs.save();
@@ -239,7 +239,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
 
         if (otherReactionUser) {
-            reaction.message.reactions.get('✅').remove(user.id);
+            reaction.message.reactions.get('✅').remove(user.id).catch(console.error);;
         }
     }
 
@@ -259,8 +259,8 @@ client.on('messageReactionRemove', (reaction, user) => {
                     ended: false
                 }, function(err, msgs) {
 
-                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
-                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id);
+                    if (msgs.authorID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
+                    if (msgs.punishableID == reactionMember.user.id) return reaction.remove(reactionMember.user.id).catch(console.error);;
 
                     msgs.in_favor -= 1;
                     msgs.save();
