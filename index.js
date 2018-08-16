@@ -73,38 +73,117 @@ client.on("ready", async () => {
 
     console.log(`Время сейчас: ${nowTimeStamp}`);
 
-    /*client.guilds.get('199181202383568896').members.forEach((member) => {
-        dbMessage.findOne({
-            punishableID: member.user.id,
-            endedVoting: true,
-            ended: false
-        }).then((voting) => {
-            if (voting) {
-                dbMessage.findOne({
-                    punishableID: member.user.id,
-                    ended: false
-                }, function(err, msgs) {
-                    if (nowTimeStamp >= msgs.unmuteTime) {
-                        member.removeRole(config.muteRoleID);
-                        console.log(`${member.user.tag} размучен`);
-                        msgs.ended = true;
-                        msgs.save()
-                    } else {
-                        member.addRole(config.muteRoleID)
-                        setTimeout(() => {
-                            member.removeRole(config.muteRoleID);
-                            console.log(`${member.user.tag} был замучен и будет размучен через ${Math.round((msgs.unmuteTime - nowTimeStamp) / 1000)} секунд`);
-                            msgs.ended = true;
-                            msgs.save()
-                        }, msgs.unmuteTime - nowTimeStamp);
-                    }
-                });
+});
+
+client.on('voiceStateUpdate', (oldMember, newMember) => {
+
+    if (oldMember.user.bot || newMember.user.bot) return;
+
+    let newUserChannel = newMember.voiceChannel;
+    let oldUserChannel = oldMember.voiceChannel;
+
+    let privateCategory = client.channels.get(config.privateCategoryID);
+
+    let mlGuild = client.guilds.get('468327359687426049');
+
+    if (newUserChannel != undefined && oldUserChannel == undefined) {
+
+
+        if (newUserChannel.id == config.createPrivateChannelID) {
+
+            mlGuild.createChannel(newMember.user.username, "voice", [{
+                id: newMember.user,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS'],
+                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }, {
+                id: newMember.guild.id,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD'],
+                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'MANAGE_CHANNELS']
+            }/*, {
+                id: '383751438565769216',
+                deny: ['SPEAK']
+            }, {
+                id: '368090830990344192',
+                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
+            }, {
+                id: '426236825997148160',
+                allow: ['MANAGE_CHANNELS']
+                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }*/]).then((channel) => {
+                channel.setParent(privateCategory);
+                if (newUserChannel) {
+                    newMember.setVoiceChannel(channel.id);
+                }
+
+            });
+        }
+
+    }
+
+    if (newUserChannel == undefined && oldUserChannel != undefined) {
+
+        if ((oldUserChannel.parentID == config.privateCategoryID) && (oldUserChannel.id != config.createPrivateChannelID)) {
+
+            let voiceCount = 0;
+
+            oldUserChannel.members.forEach((voiceUser) => {
+                voiceCount++;
+            })
+
+            if (voiceCount == 0) {
+                oldUserChannel.delete();
             }
-        });
-    }); */
+        }
+
+    }
+
+    if (newUserChannel != undefined && oldUserChannel != undefined) {
+        if ((oldUserChannel.parentID === config.privateCategoryID) && (oldUserChannel.id != config.createPrivateChannelID)) {
+
+            let voiceCount = 0;
+
+            oldUserChannel.members.forEach((voiceUser) => {
+                voiceCount++;
+            })
+
+            if (voiceCount == 0) {
+                oldUserChannel.delete();
+            }
+        }
+
+        if (newUserChannel.id == config.createPrivateChannelID) {
+
+            mlGuild.createChannel(newMember.user.username, "voice", [{
+                id: newMember.user,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS'],
+                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }, {
+                id: newMember.guild.id,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD'],
+                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'MANAGE_CHANNELS']
+            }/*, {
+                id: '383751438565769216',
+                deny: ['SPEAK']
+            }, {
+                id: '368090830990344192',
+                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD'] 
+            }, {
+                id: '426236825997148160',
+                allow: ['MANAGE_CHANNELS']
+                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS'] 
+            }*/]).then((channel) => {
+                channel.setParent(privateCategory); 
+                if (newUserChannel) {
+                    newMember.setVoiceChannel(channel.id);
+                }
+
+            });
+        }
+    }
 
 
 });
+
 
 client.on('messageReactionAdd', (reaction, user) => {
     let reactionMember = reaction.message.guild.members.get(user.id);
@@ -160,7 +239,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         if (otherReactionUser) {
             reaction.message.reactions.get('✅').remove(user.id);
         }
-    } 
+    }
 
 });
 
