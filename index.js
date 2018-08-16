@@ -273,7 +273,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 client.on('messageReactionAdd', (reaction, user) => {
     let reactionMember = reaction.message.guild.members.get(user.id);
 
-    if (reaction.emoji.name == "✅" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
+    if (reaction.emoji.name == "✅" && !user.bot) {
         dbMessage.findOne({
             id: reaction.message.id,
             ended: false
@@ -298,7 +298,7 @@ client.on('messageReactionAdd', (reaction, user) => {
         if (otherReactionUser) {
             reaction.message.reactions.get('❌').remove(user.id);
         }
-    } else if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
+    } else if (reaction.emoji.name == "❌" && !user.bot) {
         dbMessage.findOne({
             id: reaction.message.id,
             ended: false
@@ -331,7 +331,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 client.on('messageReactionRemove', (reaction, user) => {
     let reactionMember = reaction.message.guild.members.get(user.id);
 
-    if (reaction.emoji.name == "✅" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
+    if (reaction.emoji.name == "✅" && !user.bot) {
         dbMessage.findOne({
             id: reaction.message.id,
             ended: false
@@ -351,7 +351,7 @@ client.on('messageReactionRemove', (reaction, user) => {
             } else return;
         });
 
-    } else if (reaction.emoji.name == "❌" && !user.bot && (reactionMember.roles.has(config.voteRoleID) || reactionMember.hasPermission('ADMINISTRATOR'))) {
+    } else if (reaction.emoji.name == "❌" && !user.bot) {
         dbMessage.findOne({
             id: reaction.message.id,
             ended: false
