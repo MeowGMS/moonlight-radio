@@ -83,9 +83,8 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     let oldUserChannel = oldMember.voiceChannel;
 
     let privateCategory = client.channels.get(config.privateCategoryID);
-    let gamingCategory = client.channels.get(config.gamingCategoryID);
 
-    let mlGuild = client.guilds.get('468327359687426049');
+    let mlGuild = client.guilds.get('199181202383568896');
 
     if (newUserChannel != undefined && oldUserChannel == undefined) {
 
