@@ -208,11 +208,16 @@ client.on('messageReactionAdd', (reaction, user) => {
                     msgs.save();
                 });
                 
-                let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
+                let againstReaction = reaction.message.reactions.get('❌');
+                
+                if (againstReaction) {
+                    let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
 
-        if (otherReactionUser) {
-            reaction.message.reactions.get('❌').remove(user.id).catch(console.error);
-        }
+                    if (otherReactionUser) {
+                        reaction.message.reactions.get('❌').remove(user.id).catch(console.error);
+                    }
+                }  
+                
             } else return;
         });
 
