@@ -304,12 +304,12 @@ client.on('guildMemberRemove', async member => {
 
             let voiceCount = 0;
 
-            oldUserChannel.members.forEach((voiceUser) => {
+            memberChannel.members.forEach((voiceUser) => {
                 voiceCount++;
             })
 
             if (voiceCount == 0) {
-                oldUserChannel.delete().catch(console.error);
+                memberChannel.delete().catch(console.error);
             } 
         }
     }
