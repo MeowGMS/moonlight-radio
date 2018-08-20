@@ -302,7 +302,7 @@ client.on('guildMemberRemove', async member => {
     if (memberChannel) {
         if ((memberChannel.parentID == config.privateCategoryID) && (memberChannel.id != config.createPrivateChannelID)) {
 
-            /*let voiceCount = 0;
+            let voiceCount = 0;
 
             oldUserChannel.members.forEach((voiceUser) => {
                 voiceCount++;
@@ -310,9 +310,7 @@ client.on('guildMemberRemove', async member => {
 
             if (voiceCount == 0) {
                 oldUserChannel.delete().catch(console.error);
-            } */
-            
-            console.log(1);
+            } 
         }
     }
     
