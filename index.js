@@ -308,7 +308,7 @@ client.on('guildMemberRemove', async member => {
                 voiceCount++;
             })
 
-            if (voiceCount == 0) {
+            if (voiceCount == 1) {
                 memberChannel.delete().catch(console.error);
             } 
         }
