@@ -296,6 +296,29 @@ client.on('messageReactionRemove', (reaction, user) => {
     }
 });
 
+client.on('guildMemberRemove', async member => {
+    let memberChannel = member.voiceChannel;
+    
+    if (memberChannel) {
+        if ((memberChannel.parentID == config.privateCategoryID) && (memberChannel.id != config.createPrivateChannelID)) {
+
+            /*let voiceCount = 0;
+
+            oldUserChannel.members.forEach((voiceUser) => {
+                voiceCount++;
+            })
+
+            if (voiceCount == 0) {
+                oldUserChannel.delete().catch(console.error);
+            } */
+            
+            console.log(1);
+        }
+    }
+    
+    
+});
+
 client.on("message", async message => {
 
     if (!message.content.startsWith(prefix)) return;
