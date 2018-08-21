@@ -5,7 +5,7 @@ const fs = require("fs");
 const config = require("./config.json");
 const client = new Discord.Client();
 const Schema = mongoose.Schema;
-const prefix = 'v.';
+const prefix = 'v.'
 
 let cooldown = new Set();
 
@@ -34,6 +34,19 @@ const userSchema = new Schema({
     nextUseCommandTime: Number
 });
 const User = mongoose.model('users', userSchema);
+
+const ignoreEventChannels = [
+    '406443829814886400',
+    '361884026123845643',
+    '405785921175420928',
+    '379278217175105536',
+    '412636062318592010',
+    '412636270158807040',
+    '412636316367454208',
+    '381051222817505290',
+    '361285876149518337',
+    '361285635937533952'
+];
 
 client.commands = new Discord.Collection();
 
@@ -83,6 +96,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     let oldUserChannel = oldMember.voiceChannel;
 
     let privateCategory = client.channels.get(config.privateCategoryID);
+    let eventCategoryID = client.channels.get(config.eventCategoryID);
 
     let mlGuild = client.guilds.get('199181202383568896');
 
@@ -118,11 +132,54 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             }).catch(console.error);
         }
 
+        if (newUserChannel.id == config.createEventChannelID && (newMember.roles.has(config.universeRoleID) || newMember.roles.has(config.superNovaRoleID) || newMember.roles.has(config.starsRoleID) || newMember.hasPermission('ADMINISTRATOR'))) {
+
+            mlGuild.createChannel('Event Room', "voice", [{
+                id: newMember.user,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }, {
+                id: newMember.guild.id,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD'],
+                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'MANAGE_CHANNELS']
+            }, {
+                id: '383751438565769216',
+                deny: ['SPEAK']
+            }, {
+                id: '368090830990344192',
+                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
+            }, {
+                id: '426236825997148160',
+                allow: ['MANAGE_CHANNELS'],
+                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }]).then((channel) => {
+                channel.setParent(eventCategory).catch(console.error);
+                channel.setBitrate(128).catch(console.error);
+
+                if (newUserChannel) {
+                    newMember.setVoiceChannel(channel.id).catch(console.error);
+                }
+
+            }).catch(console.error);
+        }
+
     }
 
     if (newUserChannel == undefined && oldUserChannel != undefined) {
 
         if ((oldUserChannel.parentID == config.privateCategoryID) && (oldUserChannel.id != config.createPrivateChannelID)) {
+
+            let voiceCount = 0;
+
+            oldUserChannel.members.forEach((voiceUser) => {
+                voiceCount++;
+            })
+
+            if (voiceCount == 0) {
+                oldUserChannel.delete().catch(console.error);
+            }
+        }
+
+        if ((oldUserChannel.parentID === config.eventCategoryID) && (oldUserChannel.id != config.createEventChannelID) && (!ignoreEventChannels.includes(oldUserChannel.id))) {
 
             let voiceCount = 0;
 
@@ -151,6 +208,18 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             }
         }
 
+        if ((oldUserChannel.parentID === config.eventCategoryID) && (oldUserChannel.id != config.createEventChannelID) && (!ignoreEventChannels.includes(oldUserChannel.id))) {
+
+            let voiceCount = 0;
+
+            oldUserChannel.members.forEach((voiceUser) => {
+                voiceCount++;
+            })
+
+            if (voiceCount == 0) {
+                oldUserChannel.delete().catch(console.error);
+            }
+        }
 
         if (newUserChannel.id == config.createPrivateChannelID) {
 
@@ -175,6 +244,36 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             }]).then((channel) => {
                 channel.setParent(privateCategory).catch(console.error);
                 channel.setBitrate(128).catch(console.error);
+                if (newUserChannel) {
+                    newMember.setVoiceChannel(channel.id).catch(console.error);
+                }
+
+            }).catch(console.error);
+        }
+
+        if (newUserChannel.id == config.createEventChannelID && (newMember.roles.has(config.universeRoleID) || newMember.roles.has(config.superNovaRoleID) || newMember.roles.has(config.starsRoleID) || newMember.hasPermission('ADMINISTRATOR'))) {
+
+            mlGuild.createChannel('Event Room', "voice", [{
+                id: newMember.user,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }, {
+                id: newMember.guild.id,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD'],
+                deny: ['MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'MANAGE_CHANNELS']
+            }, {
+                id: '383751438565769216',
+                deny: ['SPEAK']
+            }, {
+                id: '368090830990344192',
+                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
+            }, {
+                id: '426236825997148160',
+                allow: ['MANAGE_CHANNELS'],
+                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }]).then((channel) => {
+                channel.setParent(eventCategory).catch(console.error);
+                channel.setBitrate(128).catch(console.error);
+
                 if (newUserChannel) {
                     newMember.setVoiceChannel(channel.id).catch(console.error);
                 }
@@ -207,21 +306,14 @@ client.on('messageReactionAdd', (reaction, user) => {
                     msgs.in_favor += 1;
                     msgs.save();
                 });
-                
-                let againstReaction = reaction.message.reactions.get('❌');
-                
-                if (againstReaction) {
-                    let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
-
-                    if (otherReactionUser) {
-                        reaction.message.reactions.get('❌').remove(user.id).catch(console.error);
-                    }
-                }  
-                
             } else return;
         });
 
-        
+        let otherReactionUser = reaction.message.reactions.get('❌').users.get(user.id);
+
+        if (otherReactionUser) {
+            reaction.message.reactions.get('❌').remove(user.id);
+        }
     } else if (reaction.emoji.name == "❌" && !user.bot) {
         dbMessage.findOne({
             id: reaction.message.id,
@@ -238,16 +330,16 @@ client.on('messageReactionAdd', (reaction, user) => {
                     msgs.against += 1;
                     msgs.save();
                 });
-                
-                let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
-
-                if (otherReactionUser) {
-                  reaction.message.reactions.get('✅').remove(user.id).catch(console.error);
-                }
             } else {
                 return;
             }
         });
+
+        let otherReactionUser = reaction.message.reactions.get('✅').users.get(user.id);
+
+        if (otherReactionUser) {
+            reaction.message.reactions.get('✅').remove(user.id).catch(console.error);
+        }
     }
 
 });
@@ -294,27 +386,6 @@ client.on('messageReactionRemove', (reaction, user) => {
             } else return;
         });
     }
-});
-
-client.on('guildMemberRemove', async member => {
-    let memberChannel = member.voiceChannel;
-    
-    if (memberChannel) {
-        if ((memberChannel.parentID == config.privateCategoryID) && (memberChannel.id != config.createPrivateChannelID)) {
-
-            let voiceCount = 0;
-
-            memberChannel.members.forEach((voiceUser) => {
-                voiceCount++;
-            })
-
-            if (voiceCount == 1) {
-                memberChannel.delete().catch(console.error);
-            } 
-        }
-    }
-    
-    
 });
 
 client.on("message", async message => {
