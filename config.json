@@ -2,5 +2,11 @@
     "muteRoleID": "383751438565769216",
     "voteRoleID": "474142414098137100",
     "privateCategoryID": "479566833960353793",
-    "createPrivateChannelID": "479566923697356835"
+    "createPrivateChannelID": "479566923697356835",
+    "eventCategoryID": "481398757842485248",
+    "createEventChannelID": "481399068879224832",
+
+    "universeRoleID": "426236825997148160",
+    "superNovaRoleID": "328457049388089356",
+    "starsRoleID": "470992785667915776"
 }
