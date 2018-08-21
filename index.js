@@ -96,7 +96,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     let oldUserChannel = oldMember.voiceChannel;
 
     let privateCategory = client.channels.get(config.privateCategoryID);
-    let eventCategoryID = client.channels.get(config.eventCategoryID);
+    let eventCategory = client.channels.get(config.eventCategoryID);
 
     let mlGuild = client.guilds.get('199181202383568896');
 
