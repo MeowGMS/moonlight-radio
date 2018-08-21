@@ -148,9 +148,14 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 id: '368090830990344192',
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
             }, {
-                id: '426236825997148160',
-                allow: ['MANAGE_CHANNELS'],
-                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+                id: config.universeRoleID,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }, {
+                id: config.superNovaRoleID,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }, {
+                id: config.starsRoleID,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
             }]).then((channel) => {
                 channel.setParent(eventCategory).catch(console.error);
                 channel.setBitrate(128).catch(console.error);
@@ -267,9 +272,14 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 id: '368090830990344192',
                 deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'VIEW_CHANNEL', 'CONNECT', 'SPEAK', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS', 'USE_VAD']
             }, {
-                id: '426236825997148160',
-                allow: ['MANAGE_CHANNELS'],
-                deny: ['CREATE_INSTANT_INVITE', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MANAGE_WEBHOOKS', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+                id: config.universeRoleID,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }, {
+                id: config.superNovaRoleID,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
+            }, {
+                id: config.starsRoleID,
+                allow: ['CREATE_INSTANT_INVITE', 'VIEW_CHANNEL', 'USE_VAD', 'MANAGE_CHANNELS', 'MANAGE_ROLES', 'MUTE_MEMBERS', 'DEAFEN_MEMBERS', 'MOVE_MEMBERS']
             }]).then((channel) => {
                 channel.setParent(eventCategory).catch(console.error);
                 channel.setBitrate(128).catch(console.error);
