@@ -88,7 +88,7 @@ client.on("message", async message => {
         message.delete(200);
 
         let embed = new Discord.RichEmbed()
-            .setDescription(`**Голосования ещё не было. Начните его первыми**\n\n**Для начала нужно:\n • 10 человек в войсе\n • Должно пройти 4 часа с прошлого голосования**\nЕсли вы покинете войс, то ваш голос обнулится`)
+            .setDescription(`**Голосования ещё не было. Начните его первыми**\n\n**Для начала нужно:\n • 10 человек в войсе\n • Должно пройти 4 часа с прошлого голосования**\n\nЕсли вы покинете войс, то ваш голос обнулится`)
             .setFooter(`Moonlight | Trash Boss`)
         message.channel.send({
             embed
@@ -120,7 +120,25 @@ client.on("message", async message => {
                         }
                     }
 
-                    //bossMessage =
+                    let bossMessage = client.channels.get('481437245421912064').fetchMessage('481689230649720853');
+                    let descriptionText = '';
+
+                    msg.usersVotes.forEach(function(voteInfo, index) {
+                        descriptionText = `<@${voteInfo[0]}> - ${voteInfo[2]}\n`
+
+                        if (index == msg.usersVotes.length - 1) {
+                            let embed = new Discord.RichEmbed()
+                                .setColor('GREEN')
+                                .setAuthor(`Идёт голосование...`)
+                                .setDescription(`Текущие результаты:\n\n${descriptionText}`)
+
+                            bossMessage.edit({
+                                embed
+                            });
+                        }
+                    });
+
+
                 });
             } else {
 
