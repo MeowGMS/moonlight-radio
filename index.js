@@ -21,7 +21,7 @@ const bossUserSchema = new Schema({
     id: String,
     username: String,
     votesCount: Number,
-    votesForUsersIDs: [String]
+    votesForUsersIDs: String
 });
 const bossUser = mongoose.model('boss-user', bossUserSchema);
 
@@ -123,10 +123,12 @@ client.on("message", async message => {
             } else {
                 let bossMessage = client.channels.get('481437245421912064').fetchMessage('481689230649720853');
 
+                let user = message.mentions.users.first();
+
                 new bossMessage({
                     messageID: '481689230649720853',
                     channelID: '481437245421912064',
-                    userVotesInfo: [[message.author.id, 1, message.author.username, user.id]],
+                    userVotesInfo: [[user.id, 1, user.username, message.author.id]],
                     ended: false
                 }).save().then(() => console.log(`doc created`));
 
