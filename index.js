@@ -99,9 +99,9 @@ client.on("message", async message => {
         let user = message.mentions.users.first();
 
         bossMessage.findOne({
-            usersVotes: [
+            usersVotes: {
                 id: userID.id
-            ],
+            },
             ended: false
         }).then((user) => {
             if (user) {
