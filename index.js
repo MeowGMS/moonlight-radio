@@ -128,7 +128,7 @@ client.on("message", async message => {
                 new bossMessage({
                     messageID: '481689230649720853',
                     channelID: '481437245421912064',
-                    userVotesInfo: [user.id, 1, user.username, message.author.id],
+                    //userVotesInfo: [user.id, 1, user.username, message.author.id],
                     ended: false
                 }).save().then(() => console.log(`doc created`));
 
