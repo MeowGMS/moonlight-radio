@@ -12,16 +12,19 @@ let cooldown = new Set();
 const bossMessageSchema = new Schema({
     messageID: String,
     channelID: String,
-    usersVotes: {
-        id: String,
-        username: String,
-        votes: Number,
-        voteAuthorUsername: [String],
-        voteAuthorID: [String]
-    },
+    userVotesInfo: [[]], //id, votesCount, username, userForVote
     ended: Boolean
 });
 const bossMessage = mongoose.model('boss-message', bossMessageSchema);
+
+const bossUserSchema = new Schema({
+    id: String,
+    username: String,
+    votesCount: Number,
+    votesForUsersIDs: [String]
+});
+const bossUser = mongoose.model('boss-user', bossUserSchema);
+
 
 client.commands = new Discord.Collection();
 
@@ -96,7 +99,10 @@ client.on("message", async message => {
     }
 
     if (cmd == '+') {
+
+        console.log(`Начало`);
         let user = message.mentions.users.first();
+        console.log(`user.id=${user.id}`);
 
         bossMessage.findOne({
             usersVotes: {
@@ -110,12 +116,12 @@ client.on("message", async message => {
                     ended: false
                 }, function(err, msg) {
 
-                    for (let i = 0; i < msg.usersVotes.length; i++) {
+                    for (let i = 0; i < msg.userVotesInfo.length; i++) {
                         if (userID == msg.usersVotes[i][0]) {
-                            if (msg.usersVotes[i][2] != undefined) {
-                                msg.usersVotes[i][2] += 1;
+                            if (msg.userVotesInfo[i][1] != undefined) {
+                                msg.userVotesInfo[i][1] += 1;
                             } else {
-                                msg.usersVotes[i][2] = 1;
+                                msg.userVotesInfo[i][1] = 1;
                             }
                         }
                     }
@@ -124,13 +130,13 @@ client.on("message", async message => {
                     let descriptionText = '';
 
                     msg.usersVotes.forEach(function(voteInfo, index) {
-                        descriptionText = `<@${voteInfo[0]}> - ${voteInfo[2]}\n`
+                        descriptionText = `<@${voteInfo[0]}> - ${voteInfo[1]}\n`
 
                         if (index == msg.usersVotes.length - 1) {
                             let embed = new Discord.RichEmbed()
                                 .setColor('GREEN')
                                 .setAuthor(`Идёт голосование...`)
-                                .setDescription(`Текущие результаты:\n\n${descriptionText}`)
+                                .setDescription(`Текущие результаты:\n\n**${descriptionText}**`)
 
                             bossMessage.edit({
                                 embed
@@ -141,7 +147,23 @@ client.on("message", async message => {
 
                 });
             } else {
+                let bossMessage = client.channels.get('481437245421912064').fetchMessage('481689230649720853');
 
+                new bossMessage({
+                    messageID: '481689230649720853',
+                    channelID: '481437245421912064',
+                    userVotesInfo: [[message.author.id, 1, message.author.username, user.id]]
+                    ended: false
+                }).save().then(() => console.log(`doc created`));
+
+                let embed = new Discord.RichEmbed()
+                    .setColor('GREEN')
+                    .setAuthor(`Идёт голосование...`)
+                    .setDescription(`Текущие результаты:\n\n**${message.author} - 1 голос**`)
+
+                bossMessage.edit({
+                    embed
+                });
             }
         });
     }
