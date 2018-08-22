@@ -75,7 +75,7 @@ client.on("message", async message => {
         console.log(`Начало`);
         let user = message.mentions.users.first();
 
-        if (user) return message.channel.send(`**Юзер не найден**`).then(m => m.delete(3000));
+        if (!user) return message.channel.send(`**Юзер не найден**`).then(m => m.delete(3000));
         console.log(`user.id=${user.id}`);
 
         bossMessage.findOne({
