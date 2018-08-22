@@ -68,12 +68,14 @@ client.on("ready", async () => {
 
 client.on("message", async message => {
 
-    if (cmd == `+`) {
+    if (message.content.startsWith('+')) {
 
         message.delete(200);
 
         console.log(`Начало`);
         let user = message.mentions.users.first();
+
+        if (user) return message.channel.send(`**Юзер не найден**`).then(m => m.delete(3000));
         console.log(`user.id=${user.id}`);
 
         bossMessage.findOne({
