@@ -5,17 +5,17 @@ const fs = require("fs");
 const config = require("./config.json");
 const client = new Discord.Client();
 const Schema = mongoose.Schema;
-const prefix = 'v.'
+const prefix = 'v.';
 
 let cooldown = new Set();
 
 const bossMessageSchema = new Schema({
     messageID: String,
-    channelID: String,
+    //channelID: String,
     //userVotesInfo: [[]],
-    ended: Boolean
+    //ended: Boolean
 });
-const bossMessage = mongoose.model('boss-message', bossMessageSchema);
+const bossMessage = mongoose.model('bossmessage', bossMessageSchema);
 
 const bossUserSchema = new Schema({
     id: String,
@@ -127,9 +127,9 @@ client.on("message", async message => {
 
                 new bossMessage({
                     messageID: '481689230649720853',
-                    channelID: '481437245421912064',
+                    //channelID: '481437245421912064',
                     //userVotesInfo: [user.id, 1, user.username, message.author.id],
-                    ended: false
+                    //ended: false
                 }).save().then(() => console.log(`doc created`));
                 
 
