@@ -80,7 +80,7 @@ client.on("message", async message => {
 
         bossMessage.findOne({
             usersVotes: {
-                id: userID.id
+                id: user.id
             },
             ended: false
         }).then((user) => {
