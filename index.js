@@ -98,7 +98,7 @@ client.on("message", async message => {
         })
     }
 
-    if (cmd == '+') {
+    if (cmd == 'v') {
 
         console.log(`Начало`);
         let user = message.mentions.users.first();
