@@ -12,13 +12,13 @@ let cooldown = new Set();
 const bossMessageSchema = new Schema({
     messageID: String,
     channelID: String,
-    usersVotes: [
+    usersVotes: {
         id: String,
         username: String,
         votes: Number,
         voteAuthorUsername: [String],
         voteAuthorID: [String]
-    ],
+    },
     ended: Boolean
 });
 const bossMessage = mongoose.model('boss-message', bossMessageSchema);
