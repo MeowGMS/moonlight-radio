@@ -12,7 +12,7 @@ let cooldown = new Set();
 const bossMessageSchema = new Schema({
     messageID: String,
     channelID: String,
-    userVotesInfo: [[]], //id, votesCount, username, userForVote
+    //userVotesInfo: [[]],
     ended: Boolean
 });
 const bossMessage = mongoose.model('boss-message', bossMessageSchema);
@@ -131,6 +131,7 @@ client.on("message", async message => {
                     //userVotesInfo: [user.id, 1, user.username, message.author.id],
                     ended: false
                 }).save().then(() => console.log(`doc created`));
+                
 
                 let embed = new Discord.RichEmbed()
                     .setColor('GREEN')
