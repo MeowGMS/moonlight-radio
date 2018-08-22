@@ -68,37 +68,7 @@ client.on("ready", async () => {
 
 client.on("message", async message => {
 
-    if (!message.content.startsWith(prefix)) return;
-    if (message.author.bot) return;
-    if (message.channel.type === "dm") return;
-
-    if (cooldown.has(message.author.id)) {
-        message.delete();
-        return message.channel.send(`**Вы должны подождать \`5\` секунд, прежде чем использовать команду**`)
-    }
-    if (!message.member.hasPermission("ADMINISTRATOR")) {
-        cooldown.add(message.author.id);
-    }
-    setTimeout(() => {
-        cooldown.delete(message.author.id)
-    }, 5000);
-
-    let messageArray = message.content.split(/\s+/g);
-    let cmd = messageArray[0];
-    let args = messageArray.slice(1);
-
-    if (cmd == `v.aaaa0000` && message.member.hasPermission('ADMINISTRATOR')) {
-        message.delete(200);
-
-        let embed = new Discord.RichEmbed()
-            .setDescription(`**Голосования ещё не было. Начните его первыми**\n\n**Для начала нужно:\n • 10 человек в войсе\n • Должно пройти 4 часа с прошлого голосования**\n\nЕсли вы покинете войс, то ваш голос обнулится`)
-            .setFooter(`Moonlight | Trash Boss`)
-        message.channel.send({
-            embed
-        })
-    }
-
-    if (cmd == `v.+`) {
+    if (cmd == `+`) {
 
         message.delete(200);
 
@@ -119,7 +89,7 @@ client.on("message", async message => {
                 }, function(err, msg) {
 
                     for (let i = 0; i < msg.userVotesInfo.length; i++) {
-                        if (userID == msg.usersVotes[i][0]) {
+                        if (user.id == msg.usersVotes[i][0]) {
                             if (msg.userVotesInfo[i][1] != undefined) {
                                 msg.userVotesInfo[i][1] += 1;
                             } else {
@@ -168,6 +138,36 @@ client.on("message", async message => {
                 });
             }
         });
+    }
+
+    if (!message.content.startsWith(prefix)) return;
+    if (message.author.bot) return;
+    if (message.channel.type === "dm") return;
+
+    if (cooldown.has(message.author.id)) {
+        message.delete();
+        return message.channel.send(`**Вы должны подождать \`5\` секунд, прежде чем использовать команду**`)
+    }
+    if (!message.member.hasPermission("ADMINISTRATOR")) {
+        cooldown.add(message.author.id);
+    }
+    setTimeout(() => {
+        cooldown.delete(message.author.id)
+    }, 5000);
+
+    let messageArray = message.content.split(/\s+/g);
+    let cmd = messageArray[0];
+    let args = messageArray.slice(1);
+
+    if (cmd == `v.aaaa0000` && message.member.hasPermission('ADMINISTRATOR')) {
+        message.delete(200);
+
+        let embed = new Discord.RichEmbed()
+            .setDescription(`**Голосования ещё не было. Начните его первыми**\n\n**Для начала нужно:\n • 10 человек в войсе\n • Должно пройти 4 часа с прошлого голосования**\n\nЕсли вы покинете войс, то ваш голос обнулится`)
+            .setFooter(`Moonlight | Trash Boss`)
+        message.channel.send({
+            embed
+        })
     }
 
     let commandfile = client.commands.get(cmd.slice(prefix.length));
