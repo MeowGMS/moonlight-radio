@@ -128,6 +128,7 @@ client.on("message", async message => {
                                     forUserID: userID
                                 }, function(err, count) {
                                     console.log(`${i}. ${count}`);
+                                    descriptionText += `**<@${userID}> - ${count} голосов**\n`;  
                                     //console.log(voting.nextBossesIDs.length - 1);
 
                                     if (i == (voting.nextBossesIDs.length - 1)) {
@@ -145,7 +146,6 @@ client.on("message", async message => {
                         });
                     });
                 });
-
             }
         });
     }
