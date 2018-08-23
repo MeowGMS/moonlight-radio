@@ -25,7 +25,7 @@ const bossVoter = mongoose.model('boss-voter', bossVoterSchema);
 
 client.commands = new Discord.Collection();
 
-fs.readdir("./commands/", (err, files) => {
+/*fs.readdir("./commands/", (err, files) => {
 
     let commandCount = 0;
 
@@ -46,7 +46,7 @@ fs.readdir("./commands/", (err, files) => {
         client.commands.set(props.help.name, props);
     });
     console.log(`======================================\n\n - Всего загружено ${commandCount} команд`);
-});
+}); */
 
 mongoose.connect(process.env.mongo_url, {
     useNewUrlParser: true
@@ -69,7 +69,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     if (newVoiceChannel != undefined && newVoiceChannel.id == '481418191365472256'/* && newVoiceChannel.members.size >= 10*/) {
         bossMessage.findOne({
             ended: true
-        }).then((voting) => {
+        }, {}).then((voting) => {
             if (!voting) {
                 bossMessage.findOne({
                     ended: true
@@ -108,7 +108,7 @@ client.on("message", async message => {
 
         bossMessage.findOne({
             ended: false
-        }).then((voting) => {
+        }, {}).then((voting) => {
             if (voting) {
                 bossVoter.findOne({
                     voterID: message.author.id
@@ -120,7 +120,7 @@ client.on("message", async message => {
                         }).save().then(() => {
                             bossMessage.findOne({
                                 ended: false
-                            }, function(err, msg) {
+                            }, {}, function(err, msg) {
                                 if (!msg.nextBossesIDs.includes(user.id)) {
                                     msg.nextBossesIDs.push(user.id);
                                     msg.save()
@@ -128,13 +128,13 @@ client.on("message", async message => {
                             }).then(() => {
                                 bossMessage.findOne({
                                     ended: false
-                                }, function(err, voting) {
+                                }, {}, function(err, voting) {
                                     let descriptionText = '';
                                     voting.nextBossesIDs.forEach(function(userID, i) {
 
                                         bossVoter.countDocuments({
                                             forUserID: userID
-                                        }, function(err, count) {
+                                        }, {}, function(err, count) {
                                             console.log(`${i}. ${count}`);
                                             descriptionText += `**<@${userID}> - ${count} голосов**\n`;
 
@@ -162,7 +162,7 @@ client.on("message", async message => {
                     console.log(`msg doc created`)
                     bossMessage.findOne({
                         ended: false
-                    }, function(err, msg) {
+                    }, {}, function(err, msg) {
                         msg.nextBossesIDs = user.id;
                         msg.save()
                     });
@@ -174,13 +174,13 @@ client.on("message", async message => {
                         console.log(`${message.author.tag} voter doc created`);
                         bossMessage.findOne({
                             ended: false
-                        }, function(err, voting) {
+                        }, {}, function(err, voting) {
                             let descriptionText = '';
                             voting.nextBossesIDs.forEach(function(userID, i) {
 
                                 bossVoter.countDocuments({
                                     forUserID: userID
-                                }, function(err, count) {
+                                }, {}, function(err, count) {
                                     console.log(`${i}. ${count}`);
                                     descriptionText += `**<@${userID}> - ${count} голосов**\n`;
                                     //console.log(voting.nextBossesIDs.length - 1);
