@@ -120,17 +120,17 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                 voting.nextBossesIDs.forEach(function(id) {
                                     bossVoter.countDocuments({
                                         'forUserID': id
-                                    }, function(err, count) { 
+                                    }, function(err, count) {
                                         bossMessage.findOne({
                                             'ended': false
                                         }, function(err, msg) {
                                             if (count == msg.maxVoteCount && !msg.equalVotesCountUsersIDs.includes(id))
                                                 msg.equalVotesCountUsersIDs.push(id);
-                                                msg.save();
-                                            }
+                                            msg.save();
                                         });
                                     });
                                 });
+
 
                                 setTimeout(function() {
                                     bossMessage.findOne({
@@ -142,13 +142,13 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                             .setAuthor(`Голосование закончилось`)
                                             .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs.lenght[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
                                             .setColor(`#00D11A`)
-                    
+
                                         client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
                                             m.edit({
                                                 embed
                                             });
                                         });
-                                        
+
                                         msg.ended = true;
                                         msg.save();
                                     });
