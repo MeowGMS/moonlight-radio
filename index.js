@@ -124,24 +124,37 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                         bossMessage.findOne({
                                             'ended': false
                                         }, function(err, msg) {
-                                            if (count == msg.maxVoteCount && !msg.equalVotesCountUsersIDs.includes(id))
+                                            if (count == msg.maxVoteCount && !msg.equalVotesCountUsersIDs.includes(id)) {
                                                 msg.equalVotesCountUsersIDs.push(id);
-                                            msg.save();
+                                                msg.save();
+                                            }
                                         });
                                     });
                                 });
-
 
                                 setTimeout(function() {
                                     bossMessage.findOne({
                                         'ended': false
                                     }, function(err, msg) {
-                                        let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.lenght - 0));
 
-                                        let embed = new Discord.RichEmbed()
-                                            .setAuthor(`Голосование закончилось`)
-                                            .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs.lenght[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
-                                            .setColor(`#00D11A`)
+                                        if (msg.equalVotesCountUsersIDs.length > 1) {
+                                            let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length - 0));
+
+                                            let embed = new Discord.RichEmbed()
+                                                .setAuthor(`Голосование закончилось`)
+                                                .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
+                                                .setColor(`#00D11A`)
+                                        } else {
+                                            let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length - 0));
+
+                                            let embed = new Discord.RichEmbed()
+                                                .setAuthor(`Голосование закончилось`)
+                                                .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>**\n\nДо нового голосования нужно ждать 4 часа`)
+                                                .setColor(`#00D11A`)
+                                        }
+
+
+
 
                                         client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
                                             m.edit({
