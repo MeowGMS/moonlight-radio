@@ -162,7 +162,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
         });
     }
 
-    if (oldVoiceChannel == undefined && oldVoiceChannel.id == '481418191365472256') {
+    if (newVoiceChannel == undefined && oldVoiceChannel.id == '481418191365472256') {
         bossMessage.findOne({
             'ended': false
         }).then((voting) => {
