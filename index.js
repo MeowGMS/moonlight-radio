@@ -128,9 +128,9 @@ client.on("message", async message => {
                                     forUserID: userID
                                 }, function(err, count) {
                                     console.log(`${i}. ${count}`);
-                                    console.log(voting.nextBossesIDs.lenght - 1);
+                                    //console.log(voting.nextBossesIDs.length - 1);
 
-                                    if (i == (voting.nextBossesIDs.lenght - 1)) {
+                                    if (i == (voting.nextBossesIDs.length - 1)) {
                                         let embed = new Discord.RichEmbed()
                                             .setDescription(`${descriptionText}`)
 
