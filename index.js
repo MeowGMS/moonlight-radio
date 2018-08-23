@@ -88,18 +88,44 @@ client.on("message", async message => {
                         new bossVoter({
                             voterID: message.author.id,
                             forUserID: user.id
-                        }).save();
+                        }).save().then(() => {
+                            bossMessage.findOne({
+                                ended: false
+                            }, function(err, msg) {
+                                if (!msg.nextBossesIDs.includes(user.id)) {
+                                    msg.nextBossesIDs.push(user.id);
+                                    msg.save()
+                                }
+                            }).then(() => {
+                                bossMessage.findOne({
+                                    ended: false
+                                }, function(err, voting) {
+                                    let descriptionText = '';
+                                    voting.nextBossesIDs.forEach(function(userID, i) {
 
-                        bossMessage.findOne({
-                            ended: false
-                        }, function(err, msg) {
-                            if (!msg.nextBossesIDs.includes(user.id)) {
-                                msg.nextBossesIDs.push(user.id);
-                                msg.save()
-                            }
+                                        bossVoter.countDocuments({
+                                            forUserID: userID
+                                        }, function(err, count) {
+                                            console.log(`${i}. ${count}`);
+                                            descriptionText += `**<@${userID}> - ${count} голосов**\n`;
+                                            //console.log(voting.nextBossesIDs.length - 1);
+
+                                            if (i == (voting.nextBossesIDs.length - 1)) {
+                                                let embed = new Discord.RichEmbed()
+                                                    .setDescription(`${descriptionText}`)
+
+                                                client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
+                                                    m.edit({
+                                                        embed
+                                                    });
+                                                })
+                                            }
+                                        })
+                                    });
+                                });
+                            });
                         });
                     }
-
                 });
             } else {
                 new bossMessage({
@@ -128,7 +154,7 @@ client.on("message", async message => {
                                     forUserID: userID
                                 }, function(err, count) {
                                     console.log(`${i}. ${count}`);
-                                    descriptionText += `**<@${userID}> - ${count} голосов**\n`;  
+                                    descriptionText += `**<@${userID}> - ${count} голосов**\n`;
                                     //console.log(voting.nextBossesIDs.length - 1);
 
                                     if (i == (voting.nextBossesIDs.length - 1)) {
