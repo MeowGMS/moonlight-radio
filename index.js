@@ -124,10 +124,11 @@ client.on("message", async message => {
                             let descriptionText = '';
                             voting.nextBossesIDs.forEach(function(userID, i) {
 
-                                bossVoter.count({
+                                bossVoter.countDocuments({
                                     forUserID: userID
                                 }, function(err, count) {
                                     console.log(`${i}. ${count}`);
+                                    console.log(voting.nextBossesIDs.lenght - 1);
 
                                     if (i == (voting.nextBossesIDs.lenght - 1)) {
                                         let embed = new Discord.RichEmbed()
