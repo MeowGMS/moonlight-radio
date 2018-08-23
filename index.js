@@ -10,21 +10,17 @@ const prefix = 'v.';
 let cooldown = new Set();
 
 const bossMessageSchema = new Schema({
-    messageID: String,
-    //channelID: String,
-    //userVotesInfo: [[]],
-    //ended: Boolean
+    ended: Boolean,
+    endedTime: Number,
+    nextBossesIDs: [String]
 });
-const bossMessage = mongoose.model('bossmessage', bossMessageSchema);
+const bossMessage = mongoose.model('boss-message', bossMessageSchema);
 
-const bossUserSchema = new Schema({
-    id: String,
-    username: String,
-    votesCount: Number,
-    votesForUsersIDs: String
+const bossVoterSchema = new Schema({
+    voterID: String,
+    forUserID: String
 });
-const bossUser = mongoose.model('boss-user', bossUserSchema);
-
+const bossVoter = mongoose.model('boss-voter', bossVoterSchema);
 
 client.commands = new Discord.Collection();
 
@@ -78,68 +74,72 @@ client.on("message", async message => {
         if (!user) return message.channel.send(`**Юзер не найден**`).then(m => m.delete(3000));
         console.log(`user.id=${user.id}`);
 
+        let bossDiscordMsg = client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`);
+
         bossMessage.findOne({
-            usersVotes: {
-                id: user.id
-            },
             ended: false
-        }).then((user) => {
-            if (user) {
+        }).then((voting) => {
+            if (voting) {
+                bossVoter.findOne({
+                    voterID: message.author.id,
+                    forUserID: user.id
+                }).then((vote) => {
+                    if (!vote) {
+                        new bossVoter({
+                            voterID: message.author.id,
+                            forUserID: user.id
+                        }).save();
 
-                bossMessage.findOne({
-                    ended: false
-                }, function(err, msg) {
-
-                    for (let i = 0; i < msg.userVotesInfo.length; i++) {
-                        if (user.id == msg.usersVotes[i][0]) {
-                            if (msg.userVotesInfo[i][1] != undefined) {
-                                msg.userVotesInfo[i][1] += 1;
-                            } else {
-                                msg.userVotesInfo[i][1] = 1;
+                        bossMessage.findOne({
+                            ended: false
+                        }, function(err, msg) {
+                            if (!msg.nextBossesIDs.includes(user.id)) {
+                                msg.nextBossesIDs.push(user.id);
+                                msg.save()
                             }
-                        }
+                        });
                     }
-
-                    let bossMessage = client.channels.get('481437245421912064').fetchMessage('481689230649720853');
-                    let descriptionText = '';
-
-                    msg.usersVotes.forEach(function(voteInfo, index) {
-                        descriptionText = `<@${voteInfo[0]}> - ${voteInfo[1]}\n`
-
-                        if (index == msg.usersVotes.length - 1) {
-                            let embed = new Discord.RichEmbed()
-                                .setColor('GREEN')
-                                .setAuthor(`Идёт голосование...`)
-                                .setDescription(`Текущие результаты:\n\n**${descriptionText}**`)
-
-                            bossMessage.edit({
-                                embed
-                            });
-                        }
-                    });
-
 
                 });
             } else {
-                let bossMessage = client.channels.get('481437245421912064').fetchMessage('481689230649720853');
-
-                let user = message.mentions.users.first();
-
                 new bossMessage({
-                    messageID: '481689230649720853',
-                    //channelID: '481437245421912064',
-                    //userVotesInfo: [user.id, 1, user.username, message.author.id],
-                    //ended: false
-                }).save().then(() => console.log(`doc created`));
-                
+                    ended: false
+                }).save().then(() => {
+                    console.log(`msg doc created`)
+                    bossMessage.findOne({
+                        ended: false
+                    }, function(err, msg) {
+                        msg.nextBossesIDs = user.id;
+                        msg.save()
+                    });
+                });
 
-                let embed = new Discord.RichEmbed()
-                    .setColor('GREEN')
-                    .setAuthor(`Идёт голосование...`)
-                    .setDescription(`Текущие результаты:\n\n**${message.author} - 1 голос**`)
+                new bossVoter({
+                    voterID: message.author.id,
+                    forUserID: user.id
+                }).save().then(() => console.log(`voter doc created`));
 
-                bossMessage.edit({
-                    embed
+                bossMessage.findOne({
+                    ended: false
+                }, function(err, voting) {
+                    let descriptionText = '';
+                    voting.nextBossesIDs.forEach(function(userID, i) {
+
+                        bossVoter.countDocument({
+                            forUserID: userID
+                        }, function(err, count) {
+                            console.log(`${i}. ${count}`);
+                            
+                            if (i == (voting.nextBossesIDs.lenght - 1)) {
+                                let embed = new Discord.RichEmbed()
+                                    .setDescription(`${descriptionText}`)
+    
+                                bossDiscordMsg.edit({
+                                    embed
+                                });
+                            }
+                        })
+                    });
                 });
             }
         });
