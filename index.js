@@ -68,12 +68,12 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
     if (newVoiceChannel != undefined && newVoiceChannel.id == '481418191365472256'/* && newVoiceChannel.members.size >= 10*/) {
         bossMessage.findOne({
-            ended: true
-        }, {}).then((voting) => {
+            'ended': true
+        }).then((voting) => {
             if (!voting) {
                 bossMessage.findOne({
-                    ended: true
-                }, {}, function(err, voting) {
+                    'ended': true
+                }, function(err, voting) {
                     let nowTimeStamp = Date.now()
 
                     //if (voting.endedTime + 14400000 <= nowTimeStamp) {
@@ -107,34 +107,34 @@ client.on("message", async message => {
         let bossDiscordMsg = client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`);
 
         bossMessage.findOne({
-            ended: false
-        }, {}).then((voting) => {
+            'ended': false
+        }).then((voting) => {
             if (voting) {
                 bossVoter.findOne({
-                    voterID: message.author.id
-                }, {}).then((vote) => {
+                    'voterID': message.author.id
+                }).then((vote) => {
                     if (!vote) {
                         new bossVoter({
-                            voterID: message.author.id,
-                            forUserID: user.id
+                            'voterID': message.author.id,
+                            'forUserID': user.id
                         }).save().then(() => {
                             bossMessage.findOne({
-                                ended: false
-                            }, {}, function(err, msg) {
+                                'ended': false
+                            }, function(err, msg) {
                                 if (!msg.nextBossesIDs.includes(user.id)) {
                                     msg.nextBossesIDs.push(user.id);
                                     msg.save()
                                 }
                             }).then(() => {
                                 bossMessage.findOne({
-                                    ended: false
-                                }, {}, function(err, voting) {
+                                    'ended': false
+                                }, function(err, voting) {
                                     let descriptionText = '';
                                     voting.nextBossesIDs.forEach(function(userID, i) {
 
                                         bossVoter.countDocuments({
-                                            forUserID: userID
-                                        }, {}, function(err, count) {
+                                            'forUserID': userID
+                                        }, function(err, count) {
                                             console.log(`${i}. ${count}`);
                                             descriptionText += `**<@${userID}> - ${count} голосов**\n`;
 
@@ -161,26 +161,26 @@ client.on("message", async message => {
                 }).save().then(() => {
                     console.log(`msg doc created`)
                     bossMessage.findOne({
-                        ended: false
-                    }, {}, function(err, msg) {
+                        'ended': false
+                    }, function(err, msg) {
                         msg.nextBossesIDs = user.id;
                         msg.save()
                     });
 
                     new bossVoter({
-                        voterID: message.author.id,
-                        forUserID: user.id
+                        'voterID': message.author.id,
+                        'forUserID': user.id
                     }).save().then(() => {
                         console.log(`${message.author.tag} voter doc created`);
                         bossMessage.findOne({
-                            ended: false
-                        }, {}, function(err, voting) {
+                            'ended': false
+                        }, function(err, voting) {
                             let descriptionText = '';
                             voting.nextBossesIDs.forEach(function(userID, i) {
 
                                 bossVoter.countDocuments({
-                                    forUserID: userID
-                                }, {}, function(err, count) {
+                                    'forUserID': userID
+                                }, function(err, count) {
                                     console.log(`${i}. ${count}`);
                                     descriptionText += `**<@${userID}> - ${count} голосов**\n`;
                                     //console.log(voting.nextBossesIDs.length - 1);
