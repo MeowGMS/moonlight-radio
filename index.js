@@ -123,16 +123,16 @@ client.on("message", async message => {
                         }, function(err, voting) {
                             let descriptionText = '';
                             voting.nextBossesIDs.forEach(function(userID, i) {
-        
-                                bossVoter.countDocument({
+
+                                bossVoter.count({
                                     forUserID: userID
                                 }, function(err, count) {
                                     console.log(`${i}. ${count}`);
-                                    
+
                                     if (i == (voting.nextBossesIDs.lenght - 1)) {
                                         let embed = new Discord.RichEmbed()
                                             .setDescription(`${descriptionText}`)
-            
+
                                         bossDiscordMsg.edit({
                                             embed
                                         });
