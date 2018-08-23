@@ -117,7 +117,7 @@ client.on("message", async message => {
                         voterID: message.author.id,
                         forUserID: user.id
                     }).save().then(() => {
-                        console.log(`voter doc created`);
+                        console.log(`${message.author.tag} voter doc created`);
                         bossMessage.findOne({
                             ended: false
                         }, function(err, voting) {
@@ -134,9 +134,11 @@ client.on("message", async message => {
                                         let embed = new Discord.RichEmbed()
                                             .setDescription(`${descriptionText}`)
 
-                                        bossDiscordMsg.edit({
-                                            embed
-                                        });
+                                        client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
+                                            m.edit({
+                                                embed
+                                            });
+                                        })
                                     }
                                 })
                             });
