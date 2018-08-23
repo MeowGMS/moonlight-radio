@@ -12,7 +12,8 @@ let cooldown = new Set();
 const bossMessageSchema = new Schema({
     ended: Boolean,
     endedTime: Number,
-    nextBossesIDs: [String]
+    nextBossesIDs: [String],
+    leftUsersIDs: [String]
 });
 const bossMessage = mongoose.model('boss-message', bossMessageSchema);
 
@@ -62,17 +63,46 @@ client.on("ready", async () => {
 
 });
 
+client.on('voiceStateUpdate', (oldMember, newMember) => {
+    let newVoiceChannel = newMember.voiceChannel;
+
+    if (newVoiceChannel != undefined && newVoiceChannel.id == '481418191365472256'/* && newVoiceChannel.members.size >= 10*/) {
+        bossMessage.findOne({
+            ended: true
+        }).then((voting) => {
+            if (!voting) {
+                bossMessage.findOne({
+                    ended: true
+                }, {}, function(err, voting) {
+                    let nowTimeStamp = Date.now()
+                    
+                    if (voting.endedTime + 14400000 <= nowTimeStamp) {
+                        let embed = new Discord.RichEmbed()
+                            .setAuthor(`Голосование начинается`)
+                            .setDescription(`**У вас появилась возможность проголосовать за будущего босса Trash Room**\n\nДля этого необходимо в этом канале прописать\n\`+ упоминание пользователя\` (Например: **+ <@${client.user.id}>**)\n\nПри выходе из канала:\n    • Ваш голос обнулится и вы не будете в праве проголосовать снова\n    • Вы не сможете стать боссом румы во время этого голосования\n\n***Проголосовать можно ТОЛЬКО ОДИН раз***`)
+                            .setColor(`#36393E`)
+
+                        client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
+                            m.edit({
+                                embed
+                            });
+                        })
+                    }
+                });
+            }
+        });
+    }
+});
+
 client.on("message", async message => {
 
     if (message.content.startsWith('+')) {
 
         message.delete(200);
 
-        console.log(`Начало`);
         let user = message.mentions.users.first();
 
-        if (!user) return message.channel.send(`**Юзер не найден**`).then(m => m.delete(3000));
-        console.log(`user.id=${user.id}`);
+        if (!user) return message.channel.send(`**Юзер не найден**`).then(m => m.delete(1000));
 
         let bossDiscordMsg = client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`);
 
@@ -81,8 +111,7 @@ client.on("message", async message => {
         }).then((voting) => {
             if (voting) {
                 bossVoter.findOne({
-                    voterID: message.author.id,
-                    forUserID: user.id
+                    voterID: message.author.id
                 }).then((vote) => {
                     if (!vote) {
                         new bossVoter({
@@ -108,7 +137,6 @@ client.on("message", async message => {
                                         }, function(err, count) {
                                             console.log(`${i}. ${count}`);
                                             descriptionText += `**<@${userID}> - ${count} голосов**\n`;
-                                            //console.log(voting.nextBossesIDs.length - 1);
 
                                             if (i == (voting.nextBossesIDs.length - 1)) {
                                                 let embed = new Discord.RichEmbed()
