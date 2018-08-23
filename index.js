@@ -112,7 +112,7 @@ client.on("message", async message => {
             if (voting) {
                 bossVoter.findOne({
                     voterID: message.author.id
-                }).then((vote) => {
+                }, {}).then((vote) => {
                     if (!vote) {
                         new bossVoter({
                             voterID: message.author.id,
