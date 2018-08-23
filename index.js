@@ -75,8 +75,8 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                     ended: true
                 }, {}, function(err, voting) {
                     let nowTimeStamp = Date.now()
-                    
-                    if (voting.endedTime + 14400000 <= nowTimeStamp) {
+
+                    //if (voting.endedTime + 14400000 <= nowTimeStamp) {
                         let embed = new Discord.RichEmbed()
                             .setAuthor(`Голосование начинается`)
                             .setDescription(`**У вас появилась возможность проголосовать за будущего босса Trash Room**\n\nДля этого необходимо в этом канале прописать\n\`+ упоминание пользователя\` (Например: **+ <@${client.user.id}>**)\n\nПри выходе из канала:\n    • Ваш голос обнулится и вы не будете в праве проголосовать снова\n    • Вы не сможете стать боссом румы во время этого голосования\n\n***Проголосовать можно ТОЛЬКО ОДИН раз***`)
@@ -87,7 +87,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                 embed
                             });
                         })
-                    }
+                    //}
                 });
             }
         });
