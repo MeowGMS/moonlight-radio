@@ -112,35 +112,37 @@ client.on("message", async message => {
                         msg.nextBossesIDs = user.id;
                         msg.save()
                     });
-                });
 
-                new bossVoter({
-                    voterID: message.author.id,
-                    forUserID: user.id
-                }).save().then(() => console.log(`voter doc created`));
-
-                bossMessage.findOne({
-                    ended: false
-                }, function(err, voting) {
-                    let descriptionText = '';
-                    voting.nextBossesIDs.forEach(function(userID, i) {
-
-                        bossVoter.countDocument({
-                            forUserID: userID
-                        }, function(err, count) {
-                            console.log(`${i}. ${count}`);
-                            
-                            if (i == (voting.nextBossesIDs.lenght - 1)) {
-                                let embed = new Discord.RichEmbed()
-                                    .setDescription(`${descriptionText}`)
-    
-                                bossDiscordMsg.edit({
-                                    embed
-                                });
-                            }
-                        })
+                    new bossVoter({
+                        voterID: message.author.id,
+                        forUserID: user.id
+                    }).save().then(() => {
+                        console.log(`voter doc created`);
+                        bossMessage.findOne({
+                            ended: false
+                        }, function(err, voting) {
+                            let descriptionText = '';
+                            voting.nextBossesIDs.forEach(function(userID, i) {
+        
+                                bossVoter.countDocument({
+                                    forUserID: userID
+                                }, function(err, count) {
+                                    console.log(`${i}. ${count}`);
+                                    
+                                    if (i == (voting.nextBossesIDs.lenght - 1)) {
+                                        let embed = new Discord.RichEmbed()
+                                            .setDescription(`${descriptionText}`)
+            
+                                        bossDiscordMsg.edit({
+                                            embed
+                                        });
+                                    }
+                                })
+                            });
+                        });
                     });
                 });
+
             }
         });
     }
