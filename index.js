@@ -75,7 +75,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     let newVoiceChannel = newMember.voiceChannel;
     let oldVoiceChannel = oldMember.voiceChannel;
 
-    if (newVoiceChannel != undefined && newVoiceChannel.id == config.bossVoicehannel /* && newVoiceChannel.members.size >= 10*/ ) {
+    if (newVoiceChannel != undefined && newVoiceChannel.id == config.bossVoiceChannel /* && newVoiceChannel.members.size >= 10*/ ) {
         bossMessage.findOne({
             'ended': false
         }).then((voting) => {
