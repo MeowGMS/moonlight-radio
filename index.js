@@ -106,6 +106,23 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                             m.edit({
                                 embed
                             });
+
+                            client.channels.get(config.bossVoteChannel).overwritePermissions(message.guild.roles.find('name', '@everyone'), {
+                                CREATE_INSTANT_INVITE: false,
+                                MANAGE_CHANNELS: false,
+                                MANAGE_ROLES: false,
+                                MANAGE_WEBHOOKS: false,
+                                VIEW_CHANNEL: true,
+                                SEND_MESSAGES: true,
+                                SEND_TTS_MESSAGES: false,
+                                MANAGE_MESSAGES: false,
+                                EMBED_LINKS: false,
+                                ATTACH_FILES: false,
+                                READ_MESSAGE_HISTORY: true,
+                                MENTION_EVERYONE: false,
+                                USE_EXTERNAL_EMOJIS: false,
+                                ADD_REACTIONS: false
+                            });
                         });
 
                         setTimeout(function() {
@@ -166,8 +183,8 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                 } else if (msg.equalVotesCountUsersIDs.length == 1) {
                                                     embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование закончилось`, `https://media.discordapp.net/attachments/463218826318708757/481440756306018304/Checked-595b40b65ba036ed117d3d93.png`)
-                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>\nКол-во голосов: \`${msg.maxVoteCount}\`**\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoteChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
-                                                        .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoteChannel).name} Boss`)
+                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>\nКол-во голосов: \`${msg.maxVoteCount}\`**\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoiceChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
+                                                        .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoiceChannel).name} Boss`)
                                                         .setTimestamp()
                                                         .setColor(`#00D11A`)
 
@@ -175,17 +192,32 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                 } else {
                                                     embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование закончилось`, `https://media.discordapp.net/attachments/463218826318708757/481440756306018304/Checked-595b40b65ba036ed117d3d93.png`)
-                                                        .setDescription(`**Боссом никто не стал **\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoteChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
+                                                        .setDescription(`**Боссом никто не стал **\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoiceChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
                                                         .setColor(`#00D11A`)
-                                                        .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoteChannel).name} Boss`)
+                                                        .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoiceChannel).name} Boss`)
                                                         .setTimestamp()
                                                 }
 
                                                 m.edit({
                                                     embed
                                                 }).then(() => {
-                                                    client.channels.over
-                                                    bossVoter.deleteMany({});
+                                                    client.channels.get(config.bossVoteChannel).overwritePermissions(message.guild.roles.find('name', '@everyone'), {
+                                                        CREATE_INSTANT_INVITE: false,
+                                                        MANAGE_CHANNELS: false,
+                                                        MANAGE_ROLES: false,
+                                                        MANAGE_WEBHOOKS: false,
+                                                        VIEW_CHANNEL: true,
+                                                        SEND_MESSAGES: false,
+                                                        SEND_TTS_MESSAGES: false,
+                                                        MANAGE_MESSAGES: false,
+                                                        EMBED_LINKS: false,
+                                                        ATTACH_FILES: false,
+                                                        READ_MESSAGE_HISTORY: true,
+                                                        MENTION_EVERYONE: false,
+                                                        USE_EXTERNAL_EMOJIS: false,
+                                                        ADD_REACTIONS: false
+                                                    });
+                                                    bossVoter.deleteMany({}).then(() => console.log(`Voters Docs Deleted`));
                                                 });
                                             });
 
@@ -228,7 +260,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
 client.on("message", async message => {
 
-    if (message.content.startsWith('+')) {
+    if (message.content.startsWith('+') && message.channel.id == config.bossVoteChannel) {
 
         message.delete(200);
 
@@ -266,8 +298,8 @@ client.on("message", async message => {
                                 bossMessage.findOne({
                                     'ended': false
                                 }, function(err, msg) {
-                                    if (msg.leftUsersIDs.includes(message.author.id)) return console.log(`left_voter`);
-                                    if (msg.leftUsersIDs.includes(user.id)) return console.log(`left_for-voter`);
+                                    //if (msg.leftUsersIDs.includes(message.author.id)) return console.log(`left_voter`);
+                                    //if (msg.leftUsersIDs.includes(user.id)) return console.log(`left_for-voter`);
 
                                     if (!msg.nextBossesIDs.includes(user.id)) {
                                         msg.nextBossesIDs.push(user.id);
@@ -289,6 +321,7 @@ client.on("message", async message => {
                                                     let embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование идёт`)
                                                         .setDescription(`На данный момент:\n\n${descriptionText}`)
+                                                        .setColor(`#36393E`)
 
                                                     client.channels.get(config.bossVoteChannel).fetchMessage(config.bossVoteMessage).then(m => {
                                                         m.edit({
