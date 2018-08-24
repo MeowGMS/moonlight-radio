@@ -162,22 +162,28 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
                                                     embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование закончилось`)
-                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
+                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>\nКол-во голосов: \`${msg.maxVoteCount}\`**\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoteChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
+                                                        .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoteChannel).name} Boss`)
+                                                        .setTimestamp()
                                                         .setColor(`#00D11A`)
 
-                                                    //client.members.get(msg.equalVotesCountUsersIDs[randomNum]).addRole(config.trashBossRoleID);
+                                                    client.members.get(msg.equalVotesCountUsersIDs[randomNum]).addRole(config.trashBossRoleID);
                                                 } else if (msg.equalVotesCountUsersIDs.length == 1) {
                                                     embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование закончилось`)
-                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>**\n\nДо нового голосования нужно ждать 4 часа`)
+                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>\nКол-во голосов: \`${msg.maxVoteCount}\`**\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoteChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
+                                                        .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoteChannel).name} Boss`)
+                                                        .setTimestamp()
                                                         .setColor(`#00D11A`)
 
-                                                    //client.members.get(msg.equalVotesCountUsersIDs[0]).addRole(config.trashBossRoleID);
+                                                    client.members.get(msg.equalVotesCountUsersIDs[0]).addRole(config.trashBossRoleID);
                                                 } else {
                                                     embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование закончилось`)
-                                                        .setDescription(`**Боссом никто не стал **\n\nДо нового голосования нужно ждать 4 часа`)
+                                                        .setDescription(`**Боссом никто не стал **\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoteChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
                                                         .setColor(`#00D11A`)
+                                                        .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoteChannel).name} Boss`)
+                                                        .setTimestamp()
                                                 }
 
                                                 m.edit({
@@ -235,9 +241,12 @@ client.on("message", async message => {
         if (message.member.voiceChannel.id != config.bossVoiceChannel) return message.channel.send(`**Для голосования Вы должны находится в ${client.channels.get(config.bossVoiceChannel).name}**`).then(m => m.delete(1000));
 
         let user = message.mentions.users.first();
+        let guildMember = message.mentions.members.first();
 
         if (!user) return message.channel.send(`**Юзер не найден**`).then(m => m.delete(1000));
+        if (!guildMember) return message.channel.send(`**Участник не найден**`).then(m => m.delete(1000));
         if (user.id == message.author.id) return message.channel.send(`**Нельзя голосовать за самого себя**`).then(m => m.delete(1000));
+        if (guildMember.voiceChannel == undefined || guildMember.voiceChannel.id != config.bossVoiceChannel) return message.channel.send(`**Пользователь не находится в ${client.channels.get(config.bossVoiceChannel).name}**`).then(m => m.delete(1000));
 
         bossMessage.findOne({
             ended: false
@@ -247,6 +256,7 @@ client.on("message", async message => {
                     voterID: message.author.id
                 }).then((voter) => {
                     if (!voter) {
+                        
                         new bossVoter({
                             'voterID': message.author.id,
                             'forUserID': user.id
@@ -254,6 +264,9 @@ client.on("message", async message => {
                             bossMessage.findOne({
                                 'ended': false
                             }, function(err, msg) {
+                                if (msg.leftUsersIDs.includes(message.author.id)) return console.log(`left_voter`);
+                                if (msg.leftUsersIDs.includes(user.id)) return console.log(`left_for-voter`);
+                                
                                 if (!msg.nextBossesIDs.includes(user.id)) {
                                     msg.nextBossesIDs.push(user.id);
                                     msg.save()
