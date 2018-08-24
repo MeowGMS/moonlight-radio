@@ -95,7 +95,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
                         let embed = new Discord.RichEmbed()
                             .setAuthor(`Голосование начинается`)
-                            .setDescription(`**У вас появилась возможность проголосовать за будущего босса Trash Room**\n\nДля этого необходимо в этом канале прописать\n\`+ упоминание пользователя\` (Например: **+ <@${client.user.id}>**)\n\nПри выходе из канала:\n    • Ваш голос обнулится и вы не будете в праве проголосовать снова\n    • Вы не сможете стать боссом румы во время этого голосования\n\n***Проголосовать можно ТОЛЬКО ОДИН раз***`)
+                            .setDescription(`**У вас появилась возможность проголосовать за будущего босса Trash Room**\n\nДля этого необходимо в этом канале прописать\n\`+ упоминание пользователя\` \n(Например: **+ <@${client.user.id}>**)\n\nПри выходе из канала на вас будут наложены следующие ограничения (только на время проведения данного голосования):\n    • Ваш голос обнулится и вы не будете в праве проголосовать снова\n    • Вы не сможете стать боссом румы\n\n***Проголосовать можно ТОЛЬКО ОДИН раз***`)
                             .setColor(`#36393E`)
 
                         client.guilds.get(config.moonlightGuildID).roles.get(config.trashBossRoleID).members.forEach(function(member) {
@@ -169,13 +169,13 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                             client.channels.get(config.bossVoteChannel).fetchMessage(config.bossVoteMessage).then(m => {
 
                                                 if (msg.equalVotesCountUsersIDs.length > 1) {
-                                                    let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length + 1));
+                                                    let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length));
                                                     console.log(randomNum);
 
                                                     embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование закончилось`, `https://media.discordapp.net/attachments/463218826318708757/481440756306018304/Checked-595b40b65ba036ed117d3d93.png`)
-                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>\nКол-во голосов: \`${msg.maxVoteCount}\`**\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoteChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
-                                                        .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoteChannel).name} Boss`)
+                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>\nКол-во голосов: \`${msg.maxVoteCount}\`**\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoiceChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
+                                                        .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoiceChannel).name} Boss`)
                                                         .setTimestamp()
                                                         .setColor(`#00D11A`)
 
@@ -320,7 +320,7 @@ client.on("message", async message => {
                                                 if (i == (voting.nextBossesIDs.length - 1)) {
                                                     let embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование идёт`)
-                                                        .setDescription(`**Чтобы оставить свой голос, необходимо в этом канале прописать\n\`+ упоминание пользователя\`** (Например: **+ <@${client.user.id}>**)\n\n**На данный момент:\n\n${descriptionText}**\n\nПри выходе из канала:\n    • Ваш голос обнулится и вы не будете в праве проголосовать снова\n    • Вы не сможете стать боссом румы во время этого голосования\n\n***Проголосовать можно ТОЛЬКО ОДИН раз***}`)
+                                                        .setDescription(`**Чтобы оставить свой голос, необходимо в этом канале прописать\n\`+ упоминание пользователя\`** (Например: **+ <@${client.user.id}>**)\n\n**На данный момент:\n\n${descriptionText}**\n\nПри выходе из канала на вас будут наложены следующие ограничения (только на время проведения данного голосования):\n    • Ваш голос обнулится и вы не будете в праве проголосовать снова\n    • Вы не сможете стать боссом румы во время этого голосования\n\n***Проголосовать можно ТОЛЬКО ОДИН раз***`)
                                                         .setColor(`#36393E`)
 
                                                     client.channels.get(config.bossVoteChannel).fetchMessage(config.bossVoteMessage).then(m => {
