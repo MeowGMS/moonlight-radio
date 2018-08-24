@@ -153,13 +153,13 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                         let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length - 0));
                                                         console.log(randomNum);
 
-                                                        let embed = new Discord.RichEmbed()
+                                                        embed = new Discord.RichEmbed()
                                                             .setAuthor(`Голосование закончилось`)
                                                             //.setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
                                                             .setColor(`#00D11A`)
                                                     } else {
                                                         console.log(456);
-                                                        let embed = new Discord.RichEmbed()
+                                                        embed = new Discord.RichEmbed()
                                                             .setAuthor(`Голосование закончилось`)
                                                             //.setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>**\n\nДо нового голосования нужно ждать 4 часа`)
                                                             .setColor(`#00D11A`)
