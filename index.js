@@ -148,22 +148,33 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                 client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
 
                                                     if (msg.equalVotesCountUsersIDs.length > 1) {
-                                                        let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length - 0));
+                                                        let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length + 1));
                                                         console.log(randomNum);
 
                                                         embed = new Discord.RichEmbed()
                                                             .setAuthor(`Голосование закончилось`)
                                                             .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
                                                             .setColor(`#00D11A`)
-                                                    } else {
+
+                                                        //client.members.get(msg.equalVotesCountUsersIDs[randomNum]).addRole(config.trashBossRoleID);
+                                                    } else if (msg.equalVotesCountUsersIDs.length == 1) {
                                                         embed = new Discord.RichEmbed()
                                                             .setAuthor(`Голосование закончилось`)
                                                             .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>**\n\nДо нового голосования нужно ждать 4 часа`)
+                                                            .setColor(`#00D11A`)
+
+                                                        //client.members.get(msg.equalVotesCountUsersIDs[0]).addRole(config.trashBossRoleID);
+                                                    } else {
+                                                        embed = new Discord.RichEmbed()
+                                                            .setAuthor(`Голосование закончилось`)
+                                                            .setDescription(`**Боссом никто не стал **\n\nДо нового голосования нужно ждать 4 часа`)
                                                             .setColor(`#00D11A`)
                                                     }
 
                                                     m.edit({
                                                         embed
+                                                    }).then(() => {
+                                                        bossVoter.deleteMany({}).then(() => console.log(`all docs deleted`));
                                                     });
                                                 });
 
