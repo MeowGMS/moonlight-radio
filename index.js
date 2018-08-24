@@ -145,7 +145,6 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                             'ended': false
                                         }, function(err, msg) {
 
-                                            setTimeout(function() {
                                                 client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
 
                                                     if (msg.equalVotesCountUsersIDs.length > 1) {
@@ -170,7 +169,6 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
 
                                                 msg.ended = true;
                                                 msg.save();
-                                            }, 1000);
                                         });
                                     }, 1000);
                                 }, 2000);
@@ -357,10 +355,12 @@ client.on("message", async message => {
         message.delete(200);
 
         let iW = 0;
+        
 
         while (iW < 100) {
             let randomNum = Math.floor(Math.random() * (parseInt(args[0], 10) - 0));
-            
+                iW++;
+                
             console.log(randomNum);
         }
     }
