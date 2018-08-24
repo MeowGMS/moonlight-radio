@@ -8,5 +8,13 @@
 
     "universeRoleID": "426236825997148160",
     "superNovaRoleID": "328457049388089356",
-    "starsRoleID": "470992785667915776"
+    "starsRoleID": "470992785667915776",
+
+    "moonlightGuildID": "468327359687426049",
+    
+    "trashBossRoleID": "482435839800901632",
+
+    "bossVoiceChannel": "481418191365472256",
+    "bossVoteChannel": "481437245421912064",
+    "bossVoteMessage": "481689230649720853"
 }
