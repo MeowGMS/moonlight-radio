@@ -145,29 +145,30 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                             'ended': false
                                         }, function(err, msg) {
 
+
+                                            if (msg.equalVotesCountUsersIDs.length > 1) {
+                                                console.log(123);
+                                                let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length - 0));
+
+                                                let embed = new Discord.RichEmbed()
+                                                    .setAuthor(`Голосование закончилось`)
+                                                    .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
+                                                    .setColor(`#00D11A`)
+                                            } else {
+                                                console.log(456);
+                                                let embed = new Discord.RichEmbed()
+                                                    .setAuthor(`Голосование закончилось`)
+                                                    .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>**\n\nДо нового голосования нужно ждать 4 часа`)
+                                                    .setColor(`#00D11A`)
+                                            }
+
                                             setTimeout(function() {
-                                                if (msg.equalVotesCountUsersIDs.length > 1) {
-                                                    console.log(123);
-                                                    let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length - 0));
-    
-                                                    let embed = new Discord.RichEmbed()
-                                                        .setAuthor(`Голосование закончилось`)
-                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
-                                                        .setColor(`#00D11A`)
-                                                } else {
-                                                    console.log(456);
-                                                    let embed = new Discord.RichEmbed()
-                                                        .setAuthor(`Голосование закончилось`)
-                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>**\n\nДо нового голосования нужно ждать 4 часа`)
-                                                        .setColor(`#00D11A`)
-                                                }
-    
                                                 client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
                                                     m.edit({
                                                         embed
                                                     });
                                                 });
-    
+
                                                 msg.ended = true;
                                                 msg.save();
                                             }, 1000);
@@ -221,8 +222,8 @@ client.on("message", async message => {
         }).then((voting) => {
             if (voting) {
                 bossVoter.findOne({
-                    voterID: message.author.id,
-                    forUserID: user.id
+                    voterID: message.author.id
+                    //forUserID: user.id
                 }).then((voter) => {
                     if (!voter) {
                         new bossVoter({
@@ -269,56 +270,57 @@ client.on("message", async message => {
                         });
                     }
                 });
-            } /* else {
-                new bossMessage({
-                    ended: false,
-                    maxVoteCount: 0
-                }).save().then(() => {
-                    console.log(`msg doc created`)
-                    bossMessage.findOne({
-                        'ended': false
-                    }, function(err, msg) {
-                        msg.nextBossesIDs = user.id;
-                        msg.save()
-                    });
+            }
+            /* else {
+                           new bossMessage({
+                               ended: false,
+                               maxVoteCount: 0
+                           }).save().then(() => {
+                               console.log(`msg doc created`)
+                               bossMessage.findOne({
+                                   'ended': false
+                               }, function(err, msg) {
+                                   msg.nextBossesIDs = user.id;
+                                   msg.save()
+                               });
 
-                    new bossVoter({
-                        'voterID': message.author.id,
-                        'forUserID': user.id
-                    }).save().then(() => {
-                        console.log(`${message.author.tag} voter doc created`);
-                        bossMessage.findOne({
-                            'ended': false
-                        }, function(err, voting) {
-                            let descriptionText = '';
-                            voting.nextBossesIDs.forEach(function(userID, i) {
+                               new bossVoter({
+                                   'voterID': message.author.id,
+                                   'forUserID': user.id
+                               }).save().then(() => {
+                                   console.log(`${message.author.tag} voter doc created`);
+                                   bossMessage.findOne({
+                                       'ended': false
+                                   }, function(err, voting) {
+                                       let descriptionText = '';
+                                       voting.nextBossesIDs.forEach(function(userID, i) {
 
-                                bossVoter.countDocuments({
-                                    'forUserID': userID
-                                }, function(err, count) {
-                                    console.log(`${i}. ${count}`);
+                                           bossVoter.countDocuments({
+                                               'forUserID': userID
+                                           }, function(err, count) {
+                                               console.log(`${i}. ${count}`);
 
 
-                                    descriptionText += `**<@${userID}> - ${count} ${declOfNum(count, ['голос', 'голоса', 'голосов'])}**\n`;
-                                    //console.log(voting.nextBossesIDs.length - 1);
+                                               descriptionText += `**<@${userID}> - ${count} ${declOfNum(count, ['голос', 'голоса', 'голосов'])}**\n`;
+                                               //console.log(voting.nextBossesIDs.length - 1);
 
-                                    if (i == (voting.nextBossesIDs.length - 1)) {
-                                        let embed = new Discord.RichEmbed()
-                                            .setAuthor(`Состояние голосования: идёт`)
-                                            .setDescription(`На данный момент:\n\n${descriptionText}`)
+                                               if (i == (voting.nextBossesIDs.length - 1)) {
+                                                   let embed = new Discord.RichEmbed()
+                                                       .setAuthor(`Состояние голосования: идёт`)
+                                                       .setDescription(`На данный момент:\n\n${descriptionText}`)
 
-                                        client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
-                                            m.edit({
-                                                embed
-                                            });
-                                        })
-                                    }
-                                })
-                            });
-                        });
-                    });
-                });
-            } */
+                                                   client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
+                                                       m.edit({
+                                                           embed
+                                                       });
+                                                   })
+                                               }
+                                           })
+                                       });
+                                   });
+                               });
+                           });
+                       } */
         });
     }
 
