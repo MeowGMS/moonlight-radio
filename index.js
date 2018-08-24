@@ -81,7 +81,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
         }).then((voting) => {
             if (!voting) {
                 bossMessage.findOne({
-                    "id": "timeCheck"
+                    "id": "timeCheck",
                     'ended': true
                 }, function(err, voting) {
                     let nowTimeStamp = Date.now()
