@@ -85,7 +85,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                     ended: true
                 }, function(err, voting) {
                     let nowTimeStamp = Date.now()
-                    
+
                     //if (voting.endedTime + 14400000 <= nowTimeStamp) {
 
                     new bossMessage({
@@ -162,7 +162,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                         .setTimestamp()
                                                         .setColor(`#00D11A`)
 
-                                                    client.members.get(msg.equalVotesCountUsersIDs[randomNum]).addRole(config.trashBossRoleID);
+                                                    client.guilds.get(config.moonlightGuildID).members.get(msg.equalVotesCountUsersIDs[randomNum]).addRole(config.trashBossRoleID);
                                                 } else if (msg.equalVotesCountUsersIDs.length == 1) {
                                                     embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование закончилось`, `https://media.discordapp.net/attachments/463218826318708757/481440756306018304/Checked-595b40b65ba036ed117d3d93.png`)
@@ -171,7 +171,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                         .setTimestamp()
                                                         .setColor(`#00D11A`)
 
-                                                    client.members.get(msg.equalVotesCountUsersIDs[0]).addRole(config.trashBossRoleID);
+                                                    client.guilds.get(config.moonlightGuildID).members.get(msg.equalVotesCountUsersIDs[0]).addRole(config.trashBossRoleID);
                                                 } else {
                                                     embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование закончилось`, `https://media.discordapp.net/attachments/463218826318708757/481440756306018304/Checked-595b40b65ba036ed117d3d93.png`)
@@ -219,6 +219,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                     if (!voting.leftUsersIDs.includes(newMember.id)) {
                         voting.leftUsersIDs.push(newMember.id);
                     }
+                    voting.save()
                 });
             }
         });
@@ -247,54 +248,61 @@ client.on("message", async message => {
             ended: false
         }).then((voting) => {
             if (voting) {
-                bossVoter.findOne({
-                    voterID: message.author.id
-                }).then((voter) => {
-                    if (!voter) {
-                        
-                        new bossVoter({
-                            'voterID': message.author.id,
-                            'forUserID': user.id
-                        }).save().then(() => {
-                            bossMessage.findOne({
-                                'ended': false
-                            }, function(err, msg) {
-                                if (msg.leftUsersIDs.includes(message.author.id)) return console.log(`left_voter`);
-                                if (msg.leftUsersIDs.includes(user.id)) return console.log(`left_for-voter`);
-                                
-                                if (!msg.nextBossesIDs.includes(user.id)) {
-                                    msg.nextBossesIDs.push(user.id);
-                                    msg.save()
-                                }
-                            }).then(() => {
+                bossMessage.findOne({
+                    'ended': false
+                }, function(err, msg) {
+                    if (msg.leftUsersIDs.includes(message.author.id)) return console.log(`left_voter`);
+                    if (msg.leftUsersIDs.includes(user.id)) return console.log(`left_for-voter`);
+
+                    bossVoter.findOne({
+                        voterID: message.author.id
+                    }).then((voter) => {
+                        if (!voter) {
+
+                            new bossVoter({
+                                'voterID': message.author.id,
+                                'forUserID': user.id
+                            }).save().then(() => {
                                 bossMessage.findOne({
                                     'ended': false
-                                }, function(err, voting) {
-                                    let descriptionText = '';
-                                    voting.nextBossesIDs.forEach(function(userID, i) {
+                                }, function(err, msg) {
+                                    if (msg.leftUsersIDs.includes(message.author.id)) return console.log(`left_voter`);
+                                    if (msg.leftUsersIDs.includes(user.id)) return console.log(`left_for-voter`);
 
-                                        bossVoter.countDocuments({
-                                            'forUserID': userID
-                                        }, function(err, count) {
-                                            descriptionText += `**<@${userID}> - ${count} ${declOfNum(count, ['голос', 'голоса', 'голосов'])}**\n`;
+                                    if (!msg.nextBossesIDs.includes(user.id)) {
+                                        msg.nextBossesIDs.push(user.id);
+                                        msg.save()
+                                    }
+                                }).then(() => {
+                                    bossMessage.findOne({
+                                        'ended': false
+                                    }, function(err, voting) {
+                                        let descriptionText = '';
+                                        voting.nextBossesIDs.forEach(function(userID, i) {
 
-                                            if (i == (voting.nextBossesIDs.length - 1)) {
-                                                let embed = new Discord.RichEmbed()
-                                                    .setAuthor(`Голосование идёт`)
-                                                    .setDescription(`На данный момент:\n\n${descriptionText}`)
+                                            bossVoter.countDocuments({
+                                                'forUserID': userID
+                                            }, function(err, count) {
+                                                descriptionText += `**<@${userID}> - ${count} ${declOfNum(count, ['голос', 'голоса', 'голосов'])}**\n`;
 
-                                                client.channels.get(config.bossVoteChannel).fetchMessage(config.bossVoteMessage).then(m => {
-                                                    m.edit({
-                                                        embed
-                                                    });
-                                                })
-                                            }
+                                                if (i == (voting.nextBossesIDs.length - 1)) {
+                                                    let embed = new Discord.RichEmbed()
+                                                        .setAuthor(`Голосование идёт`)
+                                                        .setDescription(`На данный момент:\n\n${descriptionText}`)
+
+                                                    client.channels.get(config.bossVoteChannel).fetchMessage(config.bossVoteMessage).then(m => {
+                                                        m.edit({
+                                                            embed
+                                                        });
+                                                    })
+                                                }
+                                            });
                                         });
                                     });
                                 });
                             });
-                        });
-                    }
+                        }
+                    });
                 });
             }
         });
