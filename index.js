@@ -145,28 +145,32 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                             'ended': false
                                         }, function(err, msg) {
 
-                                            if (msg.equalVotesCountUsersIDs.length > 1) {
-                                                let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length - 0));
-
-                                                let embed = new Discord.RichEmbed()
-                                                    .setAuthor(`Голосование закончилось`)
-                                                    .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
-                                                    .setColor(`#00D11A`)
-                                            } else {
-                                                let embed = new Discord.RichEmbed()
-                                                    .setAuthor(`Голосование закончилось`)
-                                                    .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>**\n\nДо нового голосования нужно ждать 4 часа`)
-                                                    .setColor(`#00D11A`)
-                                            }
-
-                                            client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
-                                                m.edit({
-                                                    embed
+                                            setTimeout(function() {
+                                                if (msg.equalVotesCountUsersIDs.length > 1) {
+                                                    console.log(123);
+                                                    let randomNum = Math.floor(Math.random() * (msg.equalVotesCountUsersIDs.length - 0));
+    
+                                                    let embed = new Discord.RichEmbed()
+                                                        .setAuthor(`Голосование закончилось`)
+                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>**\n\nДо нового голосования нужно ждать 4 часа`)
+                                                        .setColor(`#00D11A`)
+                                                } else {
+                                                    console.log(456);
+                                                    let embed = new Discord.RichEmbed()
+                                                        .setAuthor(`Голосование закончилось`)
+                                                        .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>**\n\nДо нового голосования нужно ждать 4 часа`)
+                                                        .setColor(`#00D11A`)
+                                                }
+    
+                                                client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
+                                                    m.edit({
+                                                        embed
+                                                    });
                                                 });
-                                            });
-
-                                            msg.ended = true;
-                                            msg.save();
+    
+                                                msg.ended = true;
+                                                msg.save();
+                                            }, 1000);
                                         });
                                     }, 1000);
                                 }, 2000);
@@ -213,12 +217,12 @@ client.on("message", async message => {
         if (user.id == message.author.id) return message.channel.send(`**Нельзя голосовать за самого себя**`).then(m => m.delete(1000));
 
         bossMessage.findOne({
-            "ended": false
+            ended: false
         }).then((voting) => {
             if (voting) {
                 bossVoter.findOne({
-                    "voterID": message.author.id,
-                    "forUserID": user.id
+                    voterID: message.author.id,
+                    forUserID: user.id
                 }).then((voter) => {
                     if (!voter) {
                         new bossVoter({
@@ -247,8 +251,10 @@ client.on("message", async message => {
 
                                             if (i == (voting.nextBossesIDs.length - 1)) {
                                                 let embed = new Discord.RichEmbed()
-                                                    .setAuthor(`Состояние голосования: идёт`)
+                                                    .setAuthor(`Голосование идёт`)
                                                     .setDescription(`На данный момент:\n\n${descriptionText}`)
+
+                                                //setTimeout(function() {}, 1000);
 
                                                 client.channels.get(`481437245421912064`).fetchMessage(`481689230649720853`).then(m => {
                                                     m.edit({
