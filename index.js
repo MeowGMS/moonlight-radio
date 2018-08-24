@@ -86,6 +86,8 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                 }, function(err, voting) {
                     let nowTimeStamp = Date.now()
 
+                    console.log(`a1`);
+
                     //if (voting.endedTime + 14400000 <= nowTimeStamp) {
 
                     new bossMessage({
@@ -109,14 +111,17 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                             });
                         });
 
+                        console.log(`a2`);
+
                         setTimeout(function() {
                             bossMessage.findOne({
                                 'ended': false
                             }, function(err, voting) {
+                                console.log(`a3`);
                                 voting.nextBossesIDs.forEach(function(id) {
                                     bossVoter.countDocuments({
                                         'forUserID': id
-                                    }, function(err, count) {фф
+                                    }, function(err, count) {
                                         bossMessage.findOne({
                                             'ended': false
                                         }, function(err, msg) {
