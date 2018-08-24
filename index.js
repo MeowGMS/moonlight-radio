@@ -320,7 +320,7 @@ client.on("message", async message => {
                                                 if (i == (voting.nextBossesIDs.length - 1)) {
                                                     let embed = new Discord.RichEmbed()
                                                         .setAuthor(`Голосование идёт`)
-                                                        .setDescription(`На данный момент:\n\n${descriptionText}`)
+                                                        .setDescription(`**Чтобы оставить свой голос, необходимо в этом канале прописать\n\`+ упоминание пользователя\`** (Например: **+ <@${client.user.id}>**)\n\n**На данный момент:\n\n${descriptionText}**\n\nПри выходе из канала:\n    • Ваш голос обнулится и вы не будете в праве проголосовать снова\n    • Вы не сможете стать боссом румы во время этого голосования\n\n***Проголосовать можно ТОЛЬКО ОДИН раз***}`)
                                                         .setColor(`#36393E`)
 
                                                     client.channels.get(config.bossVoteChannel).fetchMessage(config.bossVoteMessage).then(m => {
