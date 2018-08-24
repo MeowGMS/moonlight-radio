@@ -103,7 +103,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                             member.removeRole(config.trashBossRoleID);
                         });
 
-                        client.channels.get(config.bossVoiceChannel).fetchMessage(config.bossVoteMessage).then(m => {
+                        client.channels.get(config.bossVoteChannel).fetchMessage(config.bossVoteMessage).then(m => {
                             m.edit({
                                 embed
                             });
@@ -198,7 +198,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
         });
     }
 
-    if (newVoiceChannel == undefined && oldVoiceChannel.id == config.bossVoteChannel) {
+    if (newVoiceChannel == undefined && oldVoiceChannel.id == config.bossVoiceChannel) {
         bossMessage.findOne({
             'ended': false
         }).then((voting) => {
@@ -227,7 +227,7 @@ client.on("message", async message => {
 
         if (message.channel.id != config.bossVoteChannel) return message.channel.send(`**Вы должны голосовать в канале <#${config.bossVoteChannel}>**`).then(m => m.delete(1000));
         if (message.member.voiceChannel == undefined) return message.channel.send(`**Для голосования Вы должны находится в голосовом канале**`).then(m => m.delete(1000));
-        if (message.member.voiceChannel != config.bossVoiceChannel) return message.channel.send(`**Для голосования Вы должны находится в ${client.channels.get(config.bossVoiceChannel).name}**`).then(m => m.delete(1000));
+        if (message.member.voiceChannel.id != config.bossVoiceChannel) return message.channel.send(`**Для голосования Вы должны находится в ${client.channels.get(config.bossVoiceChannel).name}**`).then(m => m.delete(1000));
 
         let user = message.mentions.users.first();
 
