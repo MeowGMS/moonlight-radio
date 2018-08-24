@@ -85,16 +85,13 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                     ended: true
                 }, function(err, voting) {
                     let nowTimeStamp = Date.now()
-
-                    console.log(`a1`);
-
+                    
                     //if (voting.endedTime + 14400000 <= nowTimeStamp) {
 
                     new bossMessage({
                         ended: false,
                         maxVoteCount: 0
                     }).save().then(() => {
-                        console.log(`msg doc created`);
 
                         let embed = new Discord.RichEmbed()
                             .setAuthor(`Голосование начинается`)
@@ -111,13 +108,11 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                             });
                         });
 
-                        console.log(`a2`);
-
                         setTimeout(function() {
                             bossMessage.findOne({
                                 'ended': false
                             }, function(err, voting) {
-                                console.log(`a3`);
+
                                 voting.nextBossesIDs.forEach(function(id) {
                                     bossVoter.countDocuments({
                                         'forUserID': id
@@ -161,7 +156,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                     console.log(randomNum);
 
                                                     embed = new Discord.RichEmbed()
-                                                        .setAuthor(`Голосование закончилось`)
+                                                        .setAuthor(`Голосование закончилось`, `https://media.discordapp.net/attachments/463218826318708757/481440756306018304/Checked-595b40b65ba036ed117d3d93.png`)
                                                         .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[randomNum]}>\nКол-во голосов: \`${msg.maxVoteCount}\`**\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoteChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
                                                         .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoteChannel).name} Boss`)
                                                         .setTimestamp()
@@ -170,7 +165,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                     client.members.get(msg.equalVotesCountUsersIDs[randomNum]).addRole(config.trashBossRoleID);
                                                 } else if (msg.equalVotesCountUsersIDs.length == 1) {
                                                     embed = new Discord.RichEmbed()
-                                                        .setAuthor(`Голосование закончилось`)
+                                                        .setAuthor(`Голосование закончилось`, `https://media.discordapp.net/attachments/463218826318708757/481440756306018304/Checked-595b40b65ba036ed117d3d93.png`)
                                                         .setDescription(`**Боссом стал <@${msg.equalVotesCountUsersIDs[0]}>\nКол-во голосов: \`${msg.maxVoteCount}\`**\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoteChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
                                                         .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoteChannel).name} Boss`)
                                                         .setTimestamp()
@@ -179,7 +174,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                     client.members.get(msg.equalVotesCountUsersIDs[0]).addRole(config.trashBossRoleID);
                                                 } else {
                                                     embed = new Discord.RichEmbed()
-                                                        .setAuthor(`Голосование закончилось`)
+                                                        .setAuthor(`Голосование закончилось`, `https://media.discordapp.net/attachments/463218826318708757/481440756306018304/Checked-595b40b65ba036ed117d3d93.png`)
                                                         .setDescription(`**Боссом никто не стал **\n\nСчётчик обнулится через 4 часа. Голосование начнется при условии того, что в войсе **${client.channels.get(config.bossVoteChannel).name}** находится 10 и более человек.\n\n**При выходе из голосового канала все действия обнулятся (стать Боссом румы или отдать кому-то свой голос Вы сможете во время следующего голосования)**`)
                                                         .setColor(`#00D11A`)
                                                         .setFooter(`${m.guild.name} | ${client.channels.get(config.bossVoteChannel).name} Boss`)
@@ -190,7 +185,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
                                                     embed
                                                 }).then(() => {
                                                     client.channels.over
-                                                    bossVoter.deleteMany({}).then(() => console.log(`all docs deleted`));
+                                                    bossVoter.deleteMany({});
                                                 });
                                             });
 
@@ -216,7 +211,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
             if (voting) {
                 bossVoter.deleteMany({
                     'voterID': newMember.user.id
-                }).then(() => console.log(`docs deleted`))
+                });
 
                 bossMessage.findOne({
                     'ended': false
