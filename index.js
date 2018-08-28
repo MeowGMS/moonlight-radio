@@ -16,8 +16,8 @@ client.on(`ready`, () => {
 });
 
 client.on('message', message => {
-	
-	const messageArray = message.content.split(/\s+/g);
+
+    const messageArray = message.content.split(/\s+/g);
     const otherArgs = messageArray.slice(1);
     const command = messageArray[0].slice(prefix.length).toLowerCase();
 	
@@ -75,6 +75,8 @@ client.on('message', message => {
 	}
 	
 	if (message.content.startsWith('>stop')) {
+		message.delete();
+		
 		let connection = client.voiceConnections.get(message.guild.id);
 		
 		connection.disconnect()
@@ -83,6 +85,7 @@ client.on('message', message => {
 	}
 	
 	if (message.content.startsWith('>stations')) {
+		message.delete();
 		message.channel.send(`**Список доступных радиостанций:\n\n• best\n• indie\n• lite\n• dark\n• hard\n• drum\n• deep\n• beat**`);
 	}
 	
