@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const bot = new Discord.Client();
 const prefix = '>';
 
 const bestStream = 'http://soundsession.center:8000/best';
@@ -84,7 +83,7 @@ client.on('message', message => {
 	}
 	
 	if (message.content.startsWith('>stations`')) {
-		message.channel.send(`**Список доступных радиостанций\n\n• best\n• indie\n• lite\n• dark\n• hard\n• drum\n• deep\n • beat`)
+		message.channel.send(`**Список доступных радиостанций\n\n• best\n• indie\n• lite\n• dark\n• hard\n• drum\n• deep\n • beat**`);
 	}
 	
 });
