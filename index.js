@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const bot = new Discord.Client();
-
+const prefix = '>';
 
 const bestStream = 'http://soundsession.center:8000/best';
 const indieStream = 'http://soundsession.center:8000/indie';
