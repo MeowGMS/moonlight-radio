@@ -1,7 +1,7 @@
-const Discord = require('discord.js');//
+const Discord = require('discord.js');
 const client = new Discord.Client();
 const bot = new Discord.Client();
-const prefix = '>';
+
 
 const bestStream = 'http://soundsession.center:8000/best';
 const indieStream = 'http://soundsession.center:8000/indie';
@@ -63,11 +63,11 @@ client.on('message', message => {
 			break;
 	
 			default:
-				return message.channel.send(`**Радиостанция не найдена**`);
+				return message.channel.send(`**Радиостанция не найдена**\n\nСписок доступных: ${prefix}stations`);
 			break;
 		}
 		
-		message.channel.send(`**Играю радиостанцию \`${currentStream}\`**`)
+		message.channel.send(`**Играю радиостанцию \`${radioType}\`**`)
 		
 		message.member.voiceChannel.join()
 			.then(connection => {
@@ -78,10 +78,15 @@ client.on('message', message => {
 	if (message.content.startsWith('>stop')) {
 		let connection = client.voiceConnections.get(message.guild.id);
 		
-		connection.disconnect().then(() => {
-			message.channel.send(`**Бот успешно отключился от канала**`)
-		}).catch(console.error);
+		connection.disconnect()
+		
+		message.channel.send(`**Бот успешно отключился от канала**`)
 	}
+	
+	if (message.content.startsWith('>stations`')) {
+		message.channel.send(`**Список доступных радиостанций\n\n• best\n• indie\n• lite\n• dark\n• hard\n• drum\n• deep\n • beat`)
+	}
+	
 });
 
 
