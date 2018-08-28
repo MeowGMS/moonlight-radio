@@ -82,7 +82,7 @@ client.on('message', message => {
 		message.channel.send(`**Бот успешно отключился от канала**`)
 	}
 	
-	if (message.content.startsWith('>stations`')) {
+	if (message.content.startsWith('>stations')) {
 		message.channel.send(`**Список доступных радиостанций\n\n• best\n• indie\n• lite\n• dark\n• hard\n• drum\n• deep\n • beat**`);
 	}
 	
