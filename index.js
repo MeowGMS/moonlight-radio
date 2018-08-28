@@ -83,7 +83,7 @@ client.on('message', message => {
 	}
 	
 	if (message.content.startsWith('>stations')) {
-		message.channel.send(`**Список доступных радиостанций\n\n• best\n• indie\n• lite\n• dark\n• hard\n• drum\n• deep\n • beat**`);
+		message.channel.send(`**Список доступных радиостанций:\n\n• best\n• indie\n• lite\n• dark\n• hard\n• drum\n• deep\n• beat**`);
 	}
 	
 });
