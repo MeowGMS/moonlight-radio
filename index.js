@@ -7,7 +7,7 @@ const prefix = config.prefix;
 client.commands = new Discord.Collection();
 
 client.on(`ready`, () => {
-    console.log(`Bot ready`);
+    console.log(` - ${client.user.username} онлайн на ${client.guilds.size} серверах!\n\n======================================`);
 });
 
 fs.readdir("./commands/", (err, files) => {
