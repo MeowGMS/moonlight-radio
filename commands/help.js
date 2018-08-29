@@ -6,6 +6,8 @@ const prefix = config.prefix;
 
 module.exports.run = async (client, message, args) => {
 
+    message.delete(200).catch(console.error);
+
     let embed = new Discord.RichEmbed()
         .setAuthor(`Список команд`, `${client.user.avatarURL}`)
         .setDescription(`\`<..>\` - Обязательные параметры
