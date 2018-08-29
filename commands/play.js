@@ -13,13 +13,14 @@ module.exports.run = async (client, message, args) => {
     let clientVoiceconnection = client.voiceConnections.get(message.guild.id);
 
     let userVoiceChannel = message.member.voiceChannel;
+    let requestedStation;
 
     if (!requestedStation) {
         let randomNum = Math.floor(Math.random() * (config.availableStations.length));
 
         requestedStation = config.availableStations[randomNum];
     } else {
-        let requestedStation = args[0].toLowerCase();
+        requestedStation = args[0].toLowerCase();
     }
 
     if (!config.availableStations.includes(requestedStation)) return errors.stationNotFound(message.channel, message);
