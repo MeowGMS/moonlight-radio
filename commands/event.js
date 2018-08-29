@@ -25,7 +25,7 @@ module.exports.run = async (client, message, args) => {
         attachmentCounter++;
     });
 
-    console.log(`Кол-во аттачментов: ${attachmentCounter}`);
+    console.log(`Кол-во аттачментов1234: ${attachmentCounter}`);
 
     if (attachmentCounter == 0) {
 
