@@ -11,14 +11,14 @@ module.exports.run = async (client, message, args) => {
     let availableStations = '';
 
     config.availableStations.forEach((stationName) => {
-        availableStations += `• ${stationName}\n`
+        availableStations += `• **${stationName}**\n`
     });
 
     let embed = new Discord.RichEmbed()
         .setAuthor(`Доступные станции`, `${client.user.avatarURL}`)
         .setDescription(`${availableStations}`)
         .setColor(config.invisibleColor)
-        .setFooter(`Список доступных станций - ${prefix}stations`)
+        .setFooter(`${prefix}stations - Список доступных станций`)
         .setTimestamp()
 
     message.channel.send({
