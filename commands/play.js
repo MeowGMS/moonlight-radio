@@ -29,18 +29,20 @@ module.exports.run = async (client, message, args) => {
 
     let currentStream = soundsessionURL + requestedStation;
 
+    let guildIcon = '';
+
     message.member.voiceChannel.join().then(connection => {
         const dispatcher = connection.playStream(currentStream);
 
         if (message.guild.iconURL == null) {
-            let guildIcon = 'https://cdn.discordapp.com/attachments/484360305837735949/484360414277402624/freeios7.com_apple_wallpaper_rainbow-blurs_iphone5.jpg'
+            guildIcon = 'https://cdn.discordapp.com/attachments/484360305837735949/484360414277402624/freeios7.com_apple_wallpaper_rainbow-blurs_iphone5.jpg'
         } else {
-            let guildIcon = message.guild.iconURL;
+            guildIcon = message.guild.iconURL;
         }
 
         let embed = new Discord.RichEmbed()
             .setAuthor(`${message.guild.name}`, `${guildIcon}`)
-            .addField(`Сейчас играет`, `${requestedStation}`, true)
+            .addField(`Сейчас играет станция`, `${requestedStation}`, true)
             .addField(`Использовал(а) команду`, `${message.author}`, true)
             .setColor(config.moonlightColor)
             .setFooter(`${prefix}play [Название радиостанции] - Запустить бота/Переключить станцию`)
