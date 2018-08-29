@@ -18,7 +18,7 @@ module.exports.run = async (client, message, args) => {
 \`${prefix}stop\` - **Отключение бота**
 `)
         .setColor(config.invisibleColor)
-        .setFooter(`Узнать команды бота - ${prefix}help`)
+        .setFooter(`${prefix}help - Узнать команды бота`)
         .setTimestamp()
 
     message.channel.send({
