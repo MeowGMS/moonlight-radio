@@ -1,0 +1,28 @@
+const Discord = require('discord.js');
+const client = new Discord.Client();
+const errors = require('../utils/errors.js')
+const prefix = config.prefix;
+
+module.exports.run = async (client, message, args) => {
+
+    let embed = new Discord.RichEmbed()
+        .setAuthor(`Список команд`, `${client.user.avatarURL}`)
+        .setDescription(`\`<..>\` - Обязательные параметры
+\`[..]\` - Необязательные параметры
+
+\`${prefix}play [Название радиостанции]\` - Запуск бота/Переключение станции
+\`${prefix}stations\` - Список доступных радиостанций
+\`${prefix}stop\` - Отключение бота
+`)
+        .setColor(config.invisibleColor)
+        .setFooter(`Узнать команды бота - ${prefix}help`)
+        .setTimestamp()
+
+    message.channel.send({
+        embed
+    });
+}
+
+module.exports.help = {
+    name: 'stop'
+}

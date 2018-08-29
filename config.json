@@ -1,20 +1,9 @@
 {
-    "muteRoleID": "383751438565769216",
-    "voteRoleID": "474142414098137100",
-    "privateCategoryID": "479566833960353793",
-    "createPrivateChannelID": "479566923697356835",
-    "eventCategoryID": "363630592132251648",
-    "createEventChannelID": "481399068879224832",
+    "prefix": ">",
 
-    "universeRoleID": "426236825997148160",
-    "superNovaRoleID": "328457049388089356",
-    "starsRoleID": "470992785667915776",
+    "invisibleColor": "#36393E",
+    "moonlightColor": "#278BCF",
+    "redColor": "#FF2A2A",
 
-    "moonlightGuildID": "468327359687426049",
-    
-    "trashBossRoleID": "482435839800901632",
-
-    "bossVoiceChannel": "481418191365472256",
-    "bossVoteChannel": "481437245421912064",
-    "bossVoteMessage": "481689230649720853"
+    "availableStations": ["best", "indie", "lite", "dark", "hard", "drum", "deep", "beat"]
 }
