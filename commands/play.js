@@ -9,8 +9,6 @@ const soundsessionURL = 'http://soundsession.center:8000/';
 module.exports.run = async (client, message, args) => {
 
     let messageArray = message.content.split(/\s+/g);
-    let cmd = messageArray[0];
-    let args = messageArray.slice(1);
 
     let clientVoiceChannel = client.voiceConnections.get(message.guild.id).channel;
     let userVoiceChannel = message.member.voiceChannel;
