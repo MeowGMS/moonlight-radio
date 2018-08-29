@@ -33,7 +33,7 @@ module.exports.run = async (client, message, args) => {
         const dispatcher = connection.playStream(currentStream);
 
         let embed = new Discord.RichEmbed()
-            .setAuthor(`${message.guild.name}`, `${message.guild.iconURL}`)
+            //.setAuthor(`${message.guild.name}`, `${message.guild.iconURL}`)
             .addField(`Сейчас играет`, `${requestedStation}`, true)
             .addField(`Использовал(а) команду`, `${message.author}`, true)
             .setColor(config.moonlightColor)
@@ -43,6 +43,8 @@ module.exports.run = async (client, message, args) => {
         message.channel.send({
             embed
         });
+
+        console.log(message.guild.iconURL);
 
     }).catch(function(err) {
         if (err) console.log(err);
