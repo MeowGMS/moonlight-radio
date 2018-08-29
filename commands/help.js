@@ -13,9 +13,9 @@ module.exports.run = async (client, message, args) => {
         .setDescription(`\`<..>\` - Обязательные параметры
 \`[..]\` - Необязательные параметры
 
-\`${prefix}play [Название радиостанции]\` - Запуск бота/Переключение станции
-\`${prefix}stations\` - Список доступных радиостанций
-\`${prefix}stop\` - Отключение бота
+\`${prefix}play [Название радиостанции]\` - **Запуск бота/Переключение станции**
+\`${prefix}stations\` - **Список доступных радиостанций**
+\`${prefix}stop\` - **Отключение бота**
 `)
         .setColor(config.invisibleColor)
         .setFooter(`Узнать команды бота - ${prefix}help`)
