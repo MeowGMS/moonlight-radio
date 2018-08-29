@@ -4,6 +4,8 @@ const client = new Discord.Client();
 const config = require('./config.json')
 const prefix = config.prefix;
 
+client.commands = new Discord.Collection();
+
 client.on(`ready`, () => {
     console.log(`Bot ready`);
 });
