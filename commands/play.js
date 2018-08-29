@@ -14,12 +14,12 @@ module.exports.run = async (client, message, args) => {
 
     let userVoiceChannel = message.member.voiceChannel;
 
-    let requestedStation = args[0].toLowerCase();
-
     if (!requestedStation) {
         let randomNum = Math.floor(Math.random() * (config.availableStations.length));
 
         requestedStation = config.availableStations[randomNum];
+    } else {
+        let requestedStation = args[0].toLowerCase();
     }
 
     if (!config.availableStations.includes(requestedStation)) return errors.stationNotFound(message.channel, message);
