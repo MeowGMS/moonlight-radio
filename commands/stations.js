@@ -13,7 +13,7 @@ module.exports.run = async (client, message, args) => {
     });
 
     let embed = new Discord.RichEmbed()
-        .setAuthor(`Доступные станции`, `${client.user.iconURL}`)
+        .setAuthor(`Доступные станции`, `${client.user.avatarURL}`)
         .setDescription(`${availableStations}`)
         .setColor(config.invisibleColor)
         .setFooter(`Список доступных станций - ${prefix}stations`)
