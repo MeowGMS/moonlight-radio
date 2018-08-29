@@ -18,7 +18,7 @@ module.exports.stationNotFound = (channel, message) => {
 module.exports.userNotInChannel = (channel, message) => {
     embed = new Discord.RichEmbed()
         .setAuthor(`${message.guild.name}`,`${message.guild.iconURL}`)
-        .addField(`Ошибка`,`**Вы должны находится в голосовом канале, чтобы призвать бота к себе**`)
+        .addField(`Ошибка`,`**Вы должны находится в голосовом канале, чтобы управлять ботом**`)
         .setColor(config.redColor)
         .setFooter(`Автор команды - ${message.author.tag}`)
         .setTimestamp()
