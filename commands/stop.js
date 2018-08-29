@@ -6,11 +6,17 @@ const prefix = config.prefix;
 
 module.exports.run = async (client, message, args) => {
 
+    message.delete(200).catch(console.error);
+
     let connection = client.voiceConnections.get(message.guild.id);
 
     if (connection && !client.voiceConnections.get(message.guild.id).channel) return errors.botNotInChannel(message.channel, message);
 
-    connection.disconnect()
+    if (!connection) {
+        message.guild.members.get(client.user.id).voiceChannel.leave();
+    } else {
+        connection.disconnect()
+    }
 
     if (message.guild.iconURL == null) {
         guildIcon = 'https://cdn.discordapp.com/attachments/484360305837735949/484360414277402624/freeios7.com_apple_wallpaper_rainbow-blurs_iphone5.jpg'
