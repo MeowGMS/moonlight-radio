@@ -32,12 +32,18 @@ module.exports.run = async (client, message, args) => {
     message.member.voiceChannel.join().then(connection => {
         const dispatcher = connection.playStream(currentStream);
 
+        if (message.guild.iconURL == null) {
+            let guildIcon = 'https://cdn.discordapp.com/attachments/484360305837735949/484360414277402624/freeios7.com_apple_wallpaper_rainbow-blurs_iphone5.jpg'
+        } else {
+            let guildIcon = message.guild.iconURL;
+        }
+
         let embed = new Discord.RichEmbed()
-            //.setAuthor(`${message.guild.name}`, `${message.guild.iconURL}`)
+            .setAuthor(`${message.guild.name}`, `${guildIcon}`)
             .addField(`Сейчас играет`, `${requestedStation}`, true)
             .addField(`Использовал(а) команду`, `${message.author}`, true)
             .setColor(config.moonlightColor)
-            .setFooter(`Запустить бота/Переключить станцию - ${prefix}play [Название радиостанции]`)
+            .setFooter(`${prefix}play [Название радиостанции] - Запустить бота/Переключить станцию`)
             .setTimestamp()
 
         message.channel.send({
