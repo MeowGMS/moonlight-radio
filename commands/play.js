@@ -10,7 +10,8 @@ module.exports.run = async (client, message, args) => {
 
     let messageArray = message.content.split(/\s+/g);
 
-    let clientVoiceChannel = client.voiceConnections.get(message.guild.id).channel;
+    let clientVoiceconnection = client.voiceConnections.get(message.guild.id);
+
     let userVoiceChannel = message.member.voiceChannel;
 
     let requestedStation = args[0].toLowerCase();
@@ -23,7 +24,7 @@ module.exports.run = async (client, message, args) => {
 
     if (!config.availableStations.includes(requestedStation)) return errors.stationNotFound(message.channel, message);
     if (!userVoiceChannel) return errors.userNotInChannel(message.channel, message);
-    if (clientVoiceChannel && userVoiceChannel.id != clientVoiceChannel.id && clientVoiceChannel.members.size > 1) return errors.botBusyNow(message.channel, message, botVoiceChannel);
+    if (clientVoiceconnection && userVoiceChannel.id != clientVoiceconnection.channel.id && clientVoiceconnection.channel.members.size > 1) return errors.botBusyNow(message.channel, message, botVoiceChannel);
 
     let currentStream = soundsessionURL + requestedStation;
 
