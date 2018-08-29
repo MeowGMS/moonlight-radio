@@ -4,6 +4,8 @@ const client = new Discord.Client();
 const config = require('./config.json')
 const prefix = config.prefix;
 
+let cooldown = new Set();
+
 client.commands = new Discord.Collection();
 
 client.on(`ready`, () => {
