@@ -15,7 +15,7 @@ module.exports.run = async (client, message, args) => {
     let userVoiceChannel = message.member.voiceChannel;
     let requestedStation = 'null';
 
-    if (requestedStation == 'null') {
+    if (args[0]) {
         let randomNum = Math.floor(Math.random() * (config.availableStations.length));
 
         requestedStation = config.availableStations[randomNum];
