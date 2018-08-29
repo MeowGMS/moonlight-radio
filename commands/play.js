@@ -8,6 +8,8 @@ const soundsessionURL = 'http://soundsession.center:8000/';
 
 module.exports.run = async (client, message, args) => {
 
+    message.delete(200).catch(console.error);
+
     let messageArray = message.content.split(/\s+/g);
 
     let clientVoiceconnection = client.voiceConnections.get(message.guild.id);
