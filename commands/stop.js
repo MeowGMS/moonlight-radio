@@ -8,7 +8,7 @@ module.exports.run = async (client, message, args) => {
 
     let connection = client.voiceConnections.get(message.guild.id);
 
-    if (!connection && !client.voiceConnections.get(message.guild.id).channel) return errors.botNotInChannel(message.channel, message);
+    if (connection && !client.voiceConnections.get(message.guild.id).channel) return errors.botNotInChannel(message.channel, message);
 
     connection.disconnect()
 
