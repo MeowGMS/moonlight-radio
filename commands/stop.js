@@ -9,8 +9,11 @@ module.exports.run = async (client, message, args) => {
     message.delete(200).catch(console.error);
 
     let connection = client.voiceConnections.get(message.guild.id);
+    let botVoiceChannel = message.guild.members.get(client.user.id).voiceChannel;
 
-    if (connection && !client.voiceConnections.get(message.guild.id).channel) return errors.botNotInChannel(message.channel, message);
+    if (connection && !botVoiceChannel) return errors.botNotInChannel(message.channel, message);
+
+    if (message.member.voiceChannel.id != botVoiceChannel.id) return errors.userNotInChannel(message.channel, message);
 
     if (!connection) {
         message.guild.members.get(client.user.id).voiceChannel.leave();
