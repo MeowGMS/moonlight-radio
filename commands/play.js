@@ -13,9 +13,9 @@ module.exports.run = async (client, message, args) => {
     let clientVoiceconnection = client.voiceConnections.get(message.guild.id);
 
     let userVoiceChannel = message.member.voiceChannel;
-    let requestedStation;
+    let requestedStation = 'null';
 
-    if (!requestedStation) {
+    if (requestedStation == 'null') {
         let randomNum = Math.floor(Math.random() * (config.availableStations.length));
 
         requestedStation = config.availableStations[randomNum];
@@ -31,32 +31,36 @@ module.exports.run = async (client, message, args) => {
 
     let guildIcon = '';
 
-    message.member.voiceChannel.join().then(connection => {
-        const dispatcher = connection.playStream(currentStream);
-
-        if (message.guild.iconURL == null) {
-            guildIcon = 'https://cdn.discordapp.com/attachments/484360305837735949/484360414277402624/freeios7.com_apple_wallpaper_rainbow-blurs_iphone5.jpg'
-        } else {
-            guildIcon = message.guild.iconURL;
-        }
-
-        let embed = new Discord.RichEmbed()
-            .setAuthor(`${message.guild.name}`, `${guildIcon}`)
-            .addField(`Сейчас играет станция`, `${requestedStation}`, true)
-            .addField(`Использовал(а) команду`, `${message.author}`, true)
-            .setColor(config.moonlightColor)
-            .setFooter(`${prefix}play [Название радиостанции] - Запустить бота/Переключить станцию`)
-            .setTimestamp()
-
-        message.channel.send({
-            embed
+    if (!clientVoiceconnection) {
+        message.member.voiceChannel.join().then(connection => {
+            connection.playStream(currentStream);
+        }).catch(function(err) {
+            if (err) console.log(err);
         });
 
-        console.log(message.guild.iconURL);
+    } else {
+        clientVoiceconnection.playStream(currentStream);
+    }
 
-    }).catch(function(err) {
-        if (err) console.log(err);
+
+    if (message.guild.iconURL == null) {
+        guildIcon = 'https://cdn.discordapp.com/attachments/484360305837735949/484360414277402624/freeios7.com_apple_wallpaper_rainbow-blurs_iphone5.jpg'
+    } else {
+        guildIcon = message.guild.iconURL;
+    }
+
+    let embed = new Discord.RichEmbed()
+        .setAuthor(`${message.guild.name}`, `${guildIcon}`)
+        .addField(`Сейчас играет станция`, `${requestedStation}`, true)
+        .addField(`Использовал(а) команду`, `${message.author}`, true)
+        .setColor(config.moonlightColor)
+        .setFooter(`${prefix}play [Название радиостанции] - Запустить бота/Переключить станцию`)
+        .setTimestamp()
+
+    message.channel.send({
+        embed
     });
+
 
 }
 
