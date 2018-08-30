@@ -11,14 +11,18 @@ module.exports.run = async (client, message, args) => {
     let connection = client.voiceConnections.get(message.guild.id);
     let botVoiceChannel = message.guild.members.get(client.user.id).voiceChannel;
 
-    if (connection && !botVoiceChannel) return errors.botNotInChannel(message.channel, message);
+    if (!botVoiceChannel) return errors.botNotInChannel(message.channel, message);
 
-    if (message.member.voiceChannel.id != botVoiceChannel.id) return errors.userNotInChannel(message.channel, message);
+    if (message.member.voiceChannel.id != botVoiceChannel.id && botVoiceChannel.members.size > 1) return errors.userNotInChannel(message.channel, message);
 
     if (!connection) {
-        message.guild.members.get(client.user.id).voiceChannel.leave();
+        botVoiceChannel.leave();
     } else {
         connection.disconnect()
+        if (botVoiceChannel) {
+            botVoiceChannel.leave();
+        }
+
     }
 
     if (message.guild.iconURL == null) {
