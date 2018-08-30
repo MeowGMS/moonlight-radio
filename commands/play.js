@@ -10,6 +10,8 @@ module.exports.run = async (client, message, args) => {
 
     message.delete(200).catch(console.error);
 
+    if (!message.member.roles.has(config.djRoleID)) return errors.userHasNoPerms(message.channel, message);
+
     let messageArray = message.content.split(/\s+/g);
 
     let clientVoiceconnection = client.voiceConnections.get(message.guild.id);
