@@ -44,3 +44,13 @@ module.exports.botNotInChannel = (channel, message) => {
         .setTimestamp()
     channel.send({ embed }).then(m => m.delete(5000));
 }
+
+module.exports.userHasNoPerms = (channel, message) => {
+    embed = new Discord.RichEmbed()
+        .setAuthor(`${message.guild.name}`,`${message.guild.iconURL}`)
+        .addField(`Ошибка`,`**У Вас недостаточно прав использовать данную команду**`)
+        .setColor(config.redColor)
+        .setFooter(`Автор команды - ${message.author.tag}`)
+        .setTimestamp()
+    channel.send({ embed }).then(m => m.delete(5000));
+}
