@@ -10,7 +10,7 @@ module.exports.run = async (client, message, args) => {
 
     message.delete(200).catch(console.error);
 
-    if (!message.member.roles.has(config.djRoleID) && !message.member.hasPermission('ADMINISTRATOR')) return errors.userHasNoPerms(message.channel, message);
+    if (!message.member.roles.has(config.djRoleID) && !message.member.hasPermission('ADMINISTRATOR') && !message.member.roles.has('426236825997148160')) return errors.userHasNoPerms(message.channel, message);
 
     let messageArray = message.content.split(/\s+/g);
 
