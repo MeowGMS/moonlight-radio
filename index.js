@@ -37,6 +37,7 @@ fs.readdir("./commands/", (err, files) => {
 
 client.on('message', message => {
 
+    if (message.channel.id != '401098551972593665') return;
     if (!message.content.startsWith(prefix)) return;
     if (message.author.bot) return;
     if (message.channel.type === "dm") return;
