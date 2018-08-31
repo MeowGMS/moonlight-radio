@@ -7,6 +7,8 @@ const prefix = config.prefix;
 module.exports.run = async (client, message, args) => {
 
     message.delete(200).catch(console.error);
+    
+    if (!message.member.roles.has(config.djRoleID) && !message.member.hasPermission('ADMINISTRATOR')) return errors.userHasNoPerms(message.channel, message);
 
     let connection = client.voiceConnections.get(message.guild.id);
     let botVoiceChannel = message.guild.members.get(client.user.id).voiceChannel;
