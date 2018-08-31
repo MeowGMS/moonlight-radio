@@ -7,6 +7,8 @@ const prefix = config.prefix;
 module.exports.run = async (client, message, args) => {
 
     message.delete(200).catch(console.error);
+    
+    if (message.channel.id != '401098551972593665') return;
 
     let embed = new Discord.RichEmbed()
         .setAuthor(`Список команд`, `${client.user.avatarURL}`)
